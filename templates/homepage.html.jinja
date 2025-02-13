@@ -13,6 +13,36 @@
 
 <body>
     {% include "components/navbar.html.jinja" %}
+    {% for test in testers %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column" style="background-color: #05668D; color: #F0F8FF;">
+                <h5 class="card-title">{{ test["user_id"] }}</h5>
+                <p class="card-text mb-3">$ {{ test["regents"] }}</p>
+                <p class="card-text mb-3">$ {{ test["name"] }}</p>
+                <p class="card-text mb-3">$ {{ test["username"] }}</p>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <h1>Insert Data into Database</h1>
+    <form method="POST">
+        <label for="user_id">User ID:</label>
+        <input type="text" id="user_id" name="user_id" required><br><br>
+
+        <label for="regents">Regents:</label>
+        <input type="text" id="regents" name="regents" required><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
 
 </body>
 
