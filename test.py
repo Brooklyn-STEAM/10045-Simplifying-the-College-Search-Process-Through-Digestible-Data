@@ -1,11 +1,18 @@
+from flask import Flask, render_template, request
+import pymysql
+from dynaconf import Dynaconf
+import flask_login
 import requests
 import csv
 import json
 
+def requestinfo(schoolstate, schoolcity):
 
+    # conn=connect_db()
+    # cursor=conn.cursor()
 
-
-def requestinfo(schoolname='', schoolstate=''):
+    # schoolname=request.form['schoolname']
+    # schoolstate=request.form['schoolstate']
 
     count=0
 
@@ -13,12 +20,12 @@ def requestinfo(schoolname='', schoolstate=''):
 
     queries={}
     request=''
-
-    if schoolname:
-        queries.update({"school.name":(f"{schoolname}")})
     
     if schoolstate:
         queries.update({"school.state":(f"{schoolstate}")})
+
+    if schoolcity:
+            queries.update({"school.ciry":(f"{schoolcity}")})
 
     for query in queries:
         request+=(f"{query}={queries[query]}")
@@ -34,8 +41,4 @@ def requestinfo(schoolname='', schoolstate=''):
         
     return request
 
-print(requestinfo("Harvard University"))
-        
-
-
-# print(test)
+print(requestinfo("Harvard university", "Massachusetts"))

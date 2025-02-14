@@ -93,7 +93,14 @@ def index():
 if __name__ == '__main__':
     app.run(debug=True)
 
-def requestinfo(schoolname='', schoolstate=''):
+@app.route('/collegerequirements', methods=['GET', 'POST'])
+def requestinfo(schoolname, schoolstate):
+
+    conn=connect_db()
+    cursor=conn.cursor()
+
+    schoolname=request.form['schoolname']
+    schoolstate=request.form['schoolstate']
 
     count=0
 
