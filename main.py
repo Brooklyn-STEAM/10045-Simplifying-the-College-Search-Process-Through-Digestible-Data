@@ -1,3 +1,4 @@
+# All imports
 from flask import Flask, render_template, request
 import pymysql
 from dynaconf import Dynaconf
@@ -49,6 +50,18 @@ class User:
 
     def get_id(self):
         return str(self.id)
+    
+# Load User Session
+@login_manager.user_loader
+def load_user(id):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM `user` WHERE `id` = {id};")
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close
+    if result is not None:
+        return User(result["id"], result["username"], result["email"], result["name"])
 
 # Homepage initialization
 @app.route("/")
@@ -69,6 +82,7 @@ def index():
         regents = request.form['regents']
         name = request.form['name']
         username = request.form['username']
+        email = request.form['email']
 
         # Connect to the database
         conn = connect_db()
@@ -90,6 +104,8 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+## User account system
 
 def requestinfo(schoolname='', schoolstate=''):
 
