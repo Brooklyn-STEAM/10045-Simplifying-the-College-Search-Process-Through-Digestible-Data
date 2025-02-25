@@ -22,7 +22,7 @@ def connect_db():
     conn = pymysql.connect(
         host = "db.steamcenter.tech",
         database = "apollo",
-        user = "fchowdury",
+        user = conf.user,
         password = conf.password,
         autocommit = True,
         cursorclass = pymysql.cursors.DictCursor
