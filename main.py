@@ -15,6 +15,8 @@ conf = Dynaconf(
     settings_file = ["settings.toml"]
 )
 
+app.secret_key = conf.secret_key
+
 
 # Establish database connection
 def connect_db():
@@ -22,7 +24,7 @@ def connect_db():
     conn = pymysql.connect(
         host = "db.steamcenter.tech",
         database = "apollo",
-        user = "fchowdury",
+        user = conf.user,
         password = conf.password,
         autocommit = True,
         cursorclass = pymysql.cursors.DictCursor
@@ -93,40 +95,30 @@ def index():
 if __name__ == '__main__':
     app.run(debug=True)
 
-@app.route('/collegerequirements', methods=['GET', 'POST'])
-def requestinfo(schoolname, schoolstate):
+@app.route('/getdata')
+def get_data():
+    colleges = []
+    for page in range(0,1):
+        response=requests.get(f"https://api.data.gov/ed/collegescorecard/v1/schools?api_key=fEZsVdtKgtVU4ODIpjHcP8vDttDK0ftSGZaWDcAk&fields=school.name,latest.cost.attendance.academic_year&page=1&per_page={page}")
 
-    conn=connect_db()
-    cursor=conn.cursor()
+        results = response.json()['results']
 
-    schoolname=request.form['schoolname']
-    schoolstate=request.form['schoolstate']
+        colleges.extend(results)
 
-    count=0
+    for college in colleges:
 
-    api="https://api.data.gov/ed/collegescorecard/v1/schools?api_key=fEZsVdtKgtVU4ODIpjHcP8vDttDK0ftSGZaWDcAk"
+        name=college["school.name"]
+        tuition=college["latest.cost.attendance.academic_year"]
 
-    queries={}
-    request=''
+        conn = connect_db()
+        cursor = conn.cursor()
 
-    if schoolname:
-        queries.update({"school.name":(f"{schoolname}")})
-    
-    if schoolstate:
-        queries.update({"school.state":(f"{schoolstate}")})
+        request.path
 
-    for query in queries:
-        request+=(f"{query}={queries[query]}")
-        count+=1
-    
-    request=f"{api}&{request}"
+        cursor.execute(f"""
 
-    test=requests.get(request).json()
-
-    for key in test:{ 
-        print(key,":", test[key]) 
-    }
-        
-    return request
-
-print(requestinfo("Harvard University"))
+        INSERT INTO `Colleges` (`name`, `tuition`)
+        VALUES ('{name}', '{tuition}')
+                            
+                            """)
+    return
