@@ -4,8 +4,6 @@ import pymysql
 from dynaconf import Dynaconf
 import flask_login
 import requests
-import csv
-import json
 
 # Declare Flask application
 app = Flask(__name__)
@@ -20,9 +18,9 @@ conf = Dynaconf(
 def connect_db():
     """Connect to the phpMyAdmin database (LOCAL STEAM NETWORK ONLY)"""
     conn = pymysql.connect(
-        host = "db.steamcenter.tech",
-        database = "apollo",
-        user = "fchowdury",
+        host = conf.host,
+        database = conf.db,
+        user = conf.user,
         password = conf.password,
         autocommit = True,
         cursorclass = pymysql.cursors.DictCursor
@@ -64,54 +62,21 @@ def load_user(id):
 
 # Homepage initialization
 @app.route("/")
-def test_fetch():
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM `test`;")
-    pulled = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template("homepage.html.jinja", testers = pulled)
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        # Get form data
-        user_id = request.form['user_id']
-        regents = request.form['regents']
-        name = request.form['name']
-        username = request.form['username']
-        email = request.form['email']
-
-        # Connect to the database
-        conn = connect_db()
-        cursor = conn.cursor()
-
-        # Insert data into the database
-        insert_query = """INSERT INTO `test` (user_id, regents, name, username)
-                          VALUES (user_id, regents, name, username)"""
-        cursor.execute(insert_query)
-
-        # Commit changes to the database
-        conn.commit()
-
-        # Close the connection
-        cursor.close()
-        conn.close()
-        return "Done"
-    return render_template("homepage.html.jinja")
+def homepage():
+    return("homepage.html.jinja")
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-# Test delete
-@app.route("remove", methods=["POST"])
-@flask_login.login_required
-def remove():
+# Browse colleges
+@app.route("/browse")
+def college_browse():
+    query = request.args.get("query")
     conn = connect_db()
     cursor = conn.cursor()
-    user_id = flask_login.current_user.id
-    cursor.execute(f"DELETE FROM `test` WHERE `user_id` = {user_id};")
+    cursor.execute(f"SELECT * FROM `College`;")
+    colleges = cursor.fetchall()
+    return render_template("browse.html.jinja", results = colleges)
 
 ## User account system
 
@@ -133,7 +98,7 @@ def requestinfo(schoolname='', schoolstate=''):
     
     request=f"{api}&{request}"
 
-    test=requests.get(request).json()
+    test= requests.get(request).json()
 
     for key in test:{ 
         print(key,":", test[key]) 
