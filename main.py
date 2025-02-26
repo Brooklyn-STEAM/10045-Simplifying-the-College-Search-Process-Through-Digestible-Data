@@ -1,3 +1,4 @@
+# All imports
 from flask import Flask, render_template, request
 import pymysql
 from dynaconf import Dynaconf
@@ -16,13 +17,15 @@ conf = Dynaconf(
 )
 
 
+app.secret_key = conf.secret_key
+
 # Establish database connection
 def connect_db():
     """Connect to the phpMyAdmin database (LOCAL STEAM NETWORK ONLY)"""
     conn = pymysql.connect(
         host = "db.steamcenter.tech",
         database = "apollo",
-        user = "fchowdury",
+        user = conf.user,
         password = conf.password,
         autocommit = True,
         cursorclass = pymysql.cursors.DictCursor
@@ -49,6 +52,18 @@ class User:
 
     def get_id(self):
         return str(self.id)
+    
+# Load User Session
+@login_manager.user_loader
+def load_user(id):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM `user` WHERE `id` = {id};")
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close
+    if result is not None:
+        return User(result["id"], result["username"], result["email"], result["name"])
 
 # Homepage initialization
 @app.route("/")
@@ -61,63 +76,34 @@ def test_fetch():
     conn.close()
     return render_template("homepage.html.jinja", testers = pulled)
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        # Get form data
-        user_id = request.form['user_id']
-        regents = request.form['regents']
-        name = request.form['name']
-        username = request.form['username']
-
-        # Connect to the database
-        conn = connect_db()
-        cursor = conn.cursor()
-
-        # Insert data into the database
-        insert_query = """INSERT INTO `test` (user_id, regents, name, username)
-                          VALUES (user_id, regents, name, username)"""
-        cursor.execute(insert_query)
-
-        # Commit changes to the database
-        conn.commit()
-
-        # Close the connection
-        cursor.close()
-        conn.close()
-        return "Done"
-    return render_template("homepage.html.jinja")
-
 if __name__ == '__main__':
     app.run(debug=True)
 
-def requestinfo(schoolname='', schoolstate=''):
+@app.route('/getdata')
+def get_data():
+    colleges = []
+    for page in range(0,1):
+        response=requests.get(f"https://api.data.gov/ed/collegescorecard/v1/schools?api_key=fEZsVdtKgtVU4ODIpjHcP8vDttDK0ftSGZaWDcAk&fields=school.name,latest.cost.attendance.academic_year&page=1&per_page={page}")
 
-    count=0
+        results = response.json()['results']
 
-    api="https://api.data.gov/ed/collegescorecard/v1/schools?api_key=fEZsVdtKgtVU4ODIpjHcP8vDttDK0ftSGZaWDcAk"
+        colleges.extend(results)
 
-    queries={}
-    request=''
+    for college in colleges:
 
-    if schoolname:
-        queries.update({"school.name":(f"{schoolname}")})
-    
-    if schoolstate:
-        queries.update({"school.state":(f"{schoolstate}")})
+        name=college["school.name"]
+        tuition=college["latest.cost.attendance.academic_year"]
 
-    for query in queries:
-        request+=(f"{query}={queries[query]}")
-        count+=1
-    
-    request=f"{api}&{request}"
 
-    test=requests.get(request).json()
+        conn = connect_db()
+        cursor = conn.cursor()
 
-    for key in test:{ 
-        print(key,":", test[key]) 
-    }
-        
-    return request
+        request.path
 
-print(requestinfo("Harvard University"))
+        cursor.execute(f"""
+
+        INSERT INTO `Colleges` (`name`, `tuition`)
+        VALUES ('{name}', '{tuition}')
+                            
+                            """)
+    return
