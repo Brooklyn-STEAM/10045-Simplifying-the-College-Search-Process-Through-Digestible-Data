@@ -144,7 +144,6 @@ def add_review(product_id):
 
 
         
-
 # Add item to cart
 @app.route("/product/<product_id>/cart", methods=["POST"])
 @flask_login.login_required

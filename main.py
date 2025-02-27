@@ -1,5 +1,5 @@
 # All imports
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, flash
 import pymysql
 from dynaconf import Dynaconf
 import flask_login
@@ -7,7 +7,6 @@ import requests
 
 # Declare Flask application
 app = Flask(__name__)
-
 
 # Config settings and secrets
 conf = Dynaconf(
@@ -27,38 +26,78 @@ def connect_db():
     )
     return conn
 
-# User Login Manager
+# User account system
+## User Login Manager
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 login_manager.login_view=("/login")
 
-# Classes
+## Define user class
 class User:
     is_authenticated = True
     is_anonymous = False
     is_active = True
 
-    def __init__(self, user_id, username, email, first_name, last_name):
+    def __init__(self, user_id, name, username, email):
         self.id = user_id
+        self.name = name
         self.username = username
         self.email = email
-        self.first_name = first_name
-        self.last_name = last_name
 
     def get_id(self):
         return str(self.id)
     
-# Load User Session
+## Load User Session
 @login_manager.user_loader
 def load_user(id):
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM `user` WHERE `id` = {id};")
-    result = cursor.fetchone()
+    user_result = cursor.fetchone()
     cursor.close()
     conn.close
-    if result is not None:
-        return User(result["id"], result["username"], result["email"], result["name"])
+    if user_result is not None:
+        return User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
+    
+## Signup page
+@app.route("/signup", methods=["POST", "GET"])
+def signup_page():
+    if flask_login.current_user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        first_name = request.form["fname"]
+        last_name = request.form["lname"]
+        email = request.form["email"]
+        address = request.form["address"]
+        username = request.form["username"]
+        password = request.form["pass"]
+        confirm_password = request.form["confpass"]
+        conn = connect_db()
+        cursor = conn.cursor()
+        if len(username.strip()) > 20:
+            flash("Username must be 20 characters or less.")
+        else:
+            if len(password.strip()) < 8:
+                flash("Password must be 8 characters or longer.")
+            else:
+                if password != confirm_password:
+                    flash("Passwords do not match.")
+                else:
+                    try:
+                        cursor.execute(f"""
+                            INSERT INTO `Customer`
+                                (`username`, `password`, `first_name`, `last_name`, `email`, `address`)
+                            VALUES
+                                ('{username}', '{password}', '{first_name}', '{last_name}', '{email}', '{address}');
+                        """)
+                    except pymysql.err.IntegrityError:
+                        flash("Username or email is already in use.")
+                    else:
+                        return redirect("/login")
+                    finally:
+                        cursor.close()
+                        conn.close()
+    return render_template("signup.html.jinja")
 
 # Homepage initialization
 @app.route("/")
@@ -78,9 +117,7 @@ def college_browse():
     colleges = cursor.fetchall()
     return render_template("browse.html.jinja", results = colleges)
 
-## User account system
-
-## Search system
+# Search system
 def requestinfo(schoolname='', schoolstate=''):
     count = 0
     api="https://api.data.gov/ed/collegescorecard/v1/schools?api_key=fEZsVdtKgtVU4ODIpjHcP8vDttDK0ftSGZaWDcAk"
