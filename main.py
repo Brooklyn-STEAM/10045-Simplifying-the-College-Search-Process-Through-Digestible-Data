@@ -60,16 +60,14 @@ def load_user(id):
         return User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
     
 ## Signup page
-@app.route("/signup", methods=["POST", "GET"])
+@app.route("/sign_up", methods=["POST", "GET"])
 def signup_page():
     if flask_login.current_user.is_authenticated:
         return redirect("/")
     if request.method == "POST":
-        first_name = request.form["fname"]
-        last_name = request.form["lname"]
-        email = request.form["email"]
-        address = request.form["address"]
+        name = request.form["name"]
         username = request.form["username"]
+        email = request.form["email"]
         password = request.form["pass"]
         confirm_password = request.form["confpass"]
         conn = connect_db()
@@ -85,19 +83,16 @@ def signup_page():
                 else:
                     try:
                         cursor.execute(f"""
-                            INSERT INTO `Customer`
-                                (`username`, `password`, `first_name`, `last_name`, `email`, `address`)
-                            VALUES
-                                ('{username}', '{password}', '{first_name}', '{last_name}', '{email}', '{address}');
+                            
                         """)
                     except pymysql.err.IntegrityError:
                         flash("Username or email is already in use.")
                     else:
-                        return redirect("/login")
+                        return redirect("/sign_in")
                     finally:
                         cursor.close()
                         conn.close()
-    return render_template("signup.html.jinja")
+    return render_template("sign_up.html.jinja")
 
 # Homepage initialization
 @app.route("/")
