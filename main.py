@@ -26,6 +26,14 @@ def connect_db():
     )
     return conn
 
+# Homepage initialization
+@app.route("/")
+def homepage():
+    return render_template("homepage.html.jinja")
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 # User account system
 ## User Login Manager
 login_manager = flask_login.LoginManager()
@@ -94,13 +102,30 @@ def signup_page():
                         conn.close()
     return render_template("sign_up.html.jinja")
 
-# Homepage initialization
-@app.route("/")
-def homepage():
-    return("homepage.html.jinja")
-
-if __name__ == '__main__':
-    app.run(debug=True)
+## Sign in page
+@app.route("/sign_in", methods=["POST", "GET"])
+def signin_page():
+    if flask_login.current_user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["pass"]
+        conn = connect_db()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM `user` WHERE `username` = '{username}';")
+        user_result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if user_result is not None:
+            if user_result["password"] == password:
+                user = User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
+                flask_login.login_user(user)
+                return redirect("/")
+            else:
+                flash("Wrong password! Try again...")
+        else:
+            flash("Username does not exist. Please double-check your username and try again.")
+    return render_template("sign_in.html.jinja")
 
 # Browse colleges
 @app.route("/browse")
