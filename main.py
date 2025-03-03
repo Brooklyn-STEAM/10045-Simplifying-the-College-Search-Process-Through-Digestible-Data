@@ -17,6 +17,7 @@ conf = Dynaconf(
 def connect_db():
     """Connect to the phpMyAdmin database (LOCAL STEAM NETWORK ONLY)"""
     conn = pymysql.connect(
+        # ALL VARIABLES MUST BE CONFIGURED DYNAMICALLY AND SECRETLY VIA settings.toml
         host = conf.host,
         database = conf.db,
         user = conf.user,
@@ -38,7 +39,7 @@ if __name__ == '__main__':
 ## User Login Manager
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
-login_manager.login_view=("/login")
+login_manager.login_view=("/sign_in")
 
 ## Define user class
 class User:
@@ -104,27 +105,28 @@ def signup_page():
 
 ## Sign in page
 @app.route("/sign_in", methods=["POST", "GET"])
-def signin_page():
+def login_page():
     if flask_login.current_user.is_authenticated:
         return redirect("/")
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["pass"]
+        username = request.form["userVer"].strip()
+        password = request.form["passVer"]
         conn = connect_db()
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM `user` WHERE `username` = '{username}';")
-        user_result = cursor.fetchone()
+        result = cursor.fetchone()
+        
+        if result is None:
+            flash("Your username and/or password is incorrect.")
+        elif password != result["password"]:
+            flash("Your username and/or password is incorrect.")
+        else:
+            user = User(result["id"], result["username"], result["email"], result["name"])
+            # Log user in
+            flask_login.login_user(user)
+            return redirect("/")
         cursor.close()
         conn.close()
-        if user_result is not None:
-            if user_result["password"] == password:
-                user = User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
-                flask_login.login_user(user)
-                return redirect("/")
-            else:
-                flash("Wrong password! Try again...")
-        else:
-            flash("Username does not exist. Please double-check your username and try again.")
     return render_template("sign_in.html.jinja")
 
 # Browse colleges
