@@ -1,5 +1,6 @@
 # All imports
 from flask import Flask, render_template, request, redirect, flash
+
 import pymysql
 from dynaconf import Dynaconf
 import flask_login
@@ -13,10 +14,14 @@ conf = Dynaconf(
     settings_file = ["settings.toml"]
 )
 
+app.secret_key = conf.secret_key
+
+
 # Establish database connection
 def connect_db():
     """Connect to the phpMyAdmin database (LOCAL STEAM NETWORK ONLY)"""
     conn = pymysql.connect(
+
         # ALL VARIABLES MUST BE CONFIGURED DYNAMICALLY AND SECRETLY VIA settings.toml
         host = conf.host,
         database = conf.db,
@@ -56,14 +61,20 @@ class User:
     def get_id(self):
         return str(self.id)
     
-## Load User Session
+
+# Load User Session
 @login_manager.user_loader
 def load_user(id):
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM `user` WHERE `id` = {id};")
-    user_result = cursor.fetchone()
+    result = cursor.fetchone()
     cursor.close()
+    conn.close
+    if result is not None:
+        return User(result["id"], result["username"], result["email"], result["name"])
+
+
     conn.close
     if user_result is not None:
         return User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
@@ -150,19 +161,43 @@ def requestinfo(schoolname='', schoolstate=''):
     
     if schoolstate:
         queries.update({"school.state":(f"{schoolstate}")})
+=======
+    conn.close()
+    return render_template("homepage.html.jinja", testers = pulled)
 
-    for query in queries:
-        request+=(f"{query}={queries[query]}")
-        count+=1
-    
-    request=f"{api}&{request}"
+if __name__ == '__main__':
+    app.run(debug=True)
+
+@app.route('/getdata')
+def get_data():
+    colleges = []
+    for page in range(0,1):
+        response=requests.get(f"https://api.data.gov/ed/collegescorecard/v1/schools?api_key=fEZsVdtKgtVU4ODIpjHcP8vDttDK0ftSGZaWDcAk&fields=school.name,latest.cost.attendance.academic_year&page=1&per_page={page}")
+
+        results = response.json()['results']
+
+        colleges.extend(results)
+
+    for college in colleges:
+
+        name=college["school.name"]
+        tuition=college["latest.cost.attendance.academic_year"]
+
+
+
 
     test= requests.get(request).json()
 
-    for key in test:{ 
-        print(key,":", test[key]) 
-    }
-        
-    return request
+        conn = connect_db()
+        cursor = conn.cursor()
 
-print(requestinfo("Harvard University"))
+        request.path
+
+
+        cursor.execute(f"""
+
+        INSERT INTO `Colleges` (`name`, `tuition`)
+        VALUES ('{name}', '{tuition}')
+                            
+                            """)
+    return
