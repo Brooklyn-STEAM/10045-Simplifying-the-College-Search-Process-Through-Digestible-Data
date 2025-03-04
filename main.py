@@ -149,3 +149,9 @@ def college_browse():
     cursor.execute(f"SELECT * FROM `College`;")
     colleges = cursor.fetchall()
     return render_template("browse.html.jinja", results = colleges)
+
+# User input
+@app.route("/settings", methods=["POST", "GET"])
+def user_input():
+
+    return render_template("settings.html.jinja")
