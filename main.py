@@ -143,12 +143,22 @@ def login_page():
 # Browse colleges
 @app.route("/browse")
 def college_browse():
-    query = request.args.get("query")
+    
     conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM `College`;")
-    colleges = cursor.fetchall()
-    return render_template("browse.html.jinja", results = colleges)
+    cursor=conn.cursor()
+    
+    cursor.execute(f"""
+    
+    SELECT `name`, `tuition`, `admission_rate`, `average_sat`, `size`, `city`, `state`
+    FROM `CollegeList`
+    LEFT JOIN `Colleges`
+    ON `CollegeList`.`college_id`=`Colleges`.`id`
+    
+                   """)
+    
+    results=cursor.fetchall()
+    
+    return render_template("browse.html.jinja", results=results)
 
 # User input
 @app.route("/settings", methods=["POST", "GET"])
@@ -163,7 +173,7 @@ def user_input():
                    
     SELECT * 
     FROM `User`
-    WHERE `id` = %s               
+    WHERE `id` = %s             
                    
     """, (customer_id))
     
