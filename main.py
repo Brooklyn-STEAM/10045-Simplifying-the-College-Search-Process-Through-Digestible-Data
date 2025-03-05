@@ -1,6 +1,5 @@
 # All imports
 from flask import Flask, render_template, request, redirect, flash
-
 import pymysql
 from dynaconf import Dynaconf
 import flask_login
