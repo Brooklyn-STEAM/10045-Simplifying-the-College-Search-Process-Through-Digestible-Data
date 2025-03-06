@@ -66,7 +66,7 @@ class User:
 def load_user(id):
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM `user` WHERE `id` = {id};")
+    cursor.execute(f"SELECT * FROM `User` WHERE `id` = {id};")
     result = cursor.fetchone()
     cursor.close()
     conn.close
@@ -75,8 +75,8 @@ def load_user(id):
 
 
     conn.close
-    if result is not None:
-        return User(result["id"], result["name"], result["username"], result["email"])
+    if user_result is not None:
+        return User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
     
 ## Signup page
 @app.route("/sign_up", methods=["POST", "GET"])
@@ -123,7 +123,7 @@ def login_page():
         password = request.form["passVer"]
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM `user` WHERE `username` = '{username}';")
+        cursor.execute(f"SELECT * FROM `User` WHERE `username` = '{username}';")
         result = cursor.fetchone()
         
         if result is None:
