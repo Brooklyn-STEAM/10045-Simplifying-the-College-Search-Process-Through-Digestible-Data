@@ -1,6 +1,5 @@
 # All imports
 from flask import Flask, render_template, request, redirect, flash
-
 import pymysql
 from dynaconf import Dynaconf
 import flask_login
@@ -68,6 +67,7 @@ def load_user(id):
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM `User` WHERE `id` = {id};")
+    cursor.execute(f"SELECT * FROM `User` WHERE `id` = {id};")
     result = cursor.fetchone()
     cursor.close()
     conn.close
@@ -76,8 +76,8 @@ def load_user(id):
 
 
     conn.close
-    if user_result is not None:
-        return User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
+    if result is not None:
+        return User(result["id"], result["name"], result["username"], result["email"])
     
 ## Signup page
 @app.route("/sign_up", methods=["POST", "GET"])
