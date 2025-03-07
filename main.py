@@ -120,8 +120,8 @@ def login_page():
     if flask_login.current_user.is_authenticated:
         return redirect("/")
     if request.method == "POST":
-        username = request.form["userVer"].strip()
-        password = request.form["passVer"]
+        username = request.form["username"]
+        password = request.form["password"]
         conn = connect_db()
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM `User` WHERE `username` = '{username}';")
@@ -144,6 +144,8 @@ def login_page():
 @app.route("/browse")
 def college_browse():
     
+    customer_id=flask_login.current_user.id
+    
     conn = connect_db()
     cursor=conn.cursor()
     
@@ -156,9 +158,19 @@ def college_browse():
     
                    """)
     
-    results=cursor.fetchall()
+    college_results=cursor.fetchall()
     
-    return render_template("browse.html.jinja", results=results)
+    cursor.execute(f"""
+                   
+    SELECT `sat_score`, `tuition_budget`
+    FROM `User`
+    WHERE `id` = %s  
+                   
+                   """,(customer_id))
+    
+    student_results=cursor.fetchall()
+    
+    return render_template("browse.html.jinja", college_results=college_results, student_results=student_results)
 
 # User input
 @app.route("/settings", methods=["POST", "GET"])
@@ -180,3 +192,10 @@ def user_input():
     results=cursor.fetchall()
     
     return render_template("settings.html.jinja", results=results[0])
+
+@app.route("/logout", methods=["POST", "GET"])
+@flask_login.login_required
+def logout():
+    
+    flask_login.logout_user()
+    return redirect('/')
