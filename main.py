@@ -1,6 +1,5 @@
 # All imports
 from flask import Flask, render_template, request, redirect, flash
-
 import pymysql
 from dynaconf import Dynaconf
 import flask_login
@@ -67,7 +66,7 @@ class User:
 def load_user(id):
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM `user` WHERE `id` = {id};")
+    cursor.execute(f"SELECT * FROM `User` WHERE `id` = {id};")
     result = cursor.fetchone()
     cursor.close()
     conn.close
@@ -76,8 +75,8 @@ def load_user(id):
 
 
     conn.close
-    if user_result is not None:
-        return User(user_result["id"], user_result["name"], user_result["username"], user_result["email"])
+    if result is not None:
+        return User(result["id"], result["name"], result["username"], result["email"])
     
 ## Signup page
 @app.route("/sign_up", methods=["POST", "GET"])
@@ -120,11 +119,11 @@ def login_page():
     if flask_login.current_user.is_authenticated:
         return redirect("/")
     if request.method == "POST":
-        username = request.form["userVer"].strip()
-        password = request.form["passVer"]
+        username = request.form["username"].strip()
+        password = request.form["password"]
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM `user` WHERE `username` = '{username}';")
+        cursor.execute(f"SELECT * FROM `User` WHERE `username` = '{username}';")
         result = cursor.fetchone()
         
         if result is None:
@@ -149,3 +148,24 @@ def college_browse():
     cursor.execute(f"SELECT * FROM `College`;")
     colleges = cursor.fetchall()
     return render_template("browse.html.jinja", results = colleges)
+
+# User input
+@app.route("/settings", methods=["POST", "GET"])
+def user_input():
+    
+    customer_id=flask_login.current_user.id
+    
+    conn = connect_db()
+    cursor = conn.cursor()
+    
+    cursor.execute(f"""
+                   
+    SELECT * 
+    FROM `User`
+    WHERE `id` = %s               
+                   
+    """, (customer_id))
+    
+    results=cursor.fetchall()
+    
+    return render_template("settings.html.jinja", results=results[0])
