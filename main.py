@@ -149,8 +149,21 @@ def college_browse():
     colleges = cursor.fetchall()
     return render_template("browse.html.jinja", results = colleges)
 
-# User input
+# Analytics page (college and user graphs for comparison and analysis)
+@app.route("/analytics")
+def analytics_page():
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM `Graphs`;")
+    graphs = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template("analytics.html.jinja", results = graphs)
+    # Note: For now, the database connection and data fetcher are placeholders. This WILL be changed later as neccessary.
+
+# User input on settings page
 @app.route("/settings", methods=["POST", "GET"])
+@flask_login.login_required
 def user_input():
     
     customer_id=flask_login.current_user.id
@@ -169,3 +182,10 @@ def user_input():
     results=cursor.fetchall()
     
     return render_template("settings.html.jinja", results=results[0])
+
+# Log out
+@app.route('/logout')
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    return redirect('/')
