@@ -86,7 +86,7 @@ def signup_page():
         return redirect("/")
     
     if request.method == "POST":
-        
+
         username = request.form["username"]
         
         password = request.form["password"]
