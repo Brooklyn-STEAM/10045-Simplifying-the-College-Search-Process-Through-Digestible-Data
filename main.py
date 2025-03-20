@@ -82,12 +82,21 @@ def load_user(id):
 @app.route("/sign_up", methods=["POST", "GET"])
 def signup_page():
     
+    
     if flask_login.current_user.is_authenticated:
         return redirect("/")
+    
     
     if request.method == "POST":
         
         username = request.form["username"]
+        
+        password = request.form["password"]
+        
+        first_name = request.form["first_name"]
+        
+        last_name = request.form["last_name"]
+        
         
         password = request.form["password"]
         
@@ -101,8 +110,14 @@ def signup_page():
         
         confirm_password = request.form["confirm_password"]
         
+        
+        zip_code = request.form["zip_code"]
+        
+        confirm_password = request.form["confirm_password"]
+        
         conn = connect_db()
         cursor = conn.cursor()
+        
         
         if len(username.strip()) > 20:
             flash("Username must be 20 characters or less.")
@@ -193,6 +208,7 @@ def user_input():
     SELECT * 
     FROM `User`
     WHERE `id` = %s               
+
 
     """, (customer_id))
     
