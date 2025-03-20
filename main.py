@@ -193,20 +193,34 @@ def user_input():
     SELECT * 
     FROM `User`
     WHERE `id` = %s               
-                   
+
     """, (customer_id))
     
     results=cursor.fetchall()
     
     results=results[0]
     
+
+    print(results)
+    
+    if results['sat_score']==None:
+        results['sat_score']=0
+    
+    if results['tuition_budget']==None:
+        results['tuition_budget']=0
+    
+    if results['population_preferences']==None:
+        results['population_preferences']=0
+    
     results['tuition_budget']=(f"${results['tuition_budget']:,d}")
     
     results['population_preferences']=(f"{results['population_preferences']:,d}")
     
     print(results)
-    
+
     return render_template("settings.html.jinja", results=results)
+    
+
 
 @app.route("/settings/update", methods=["POST", "GET"])
 @flask_login.login_required
