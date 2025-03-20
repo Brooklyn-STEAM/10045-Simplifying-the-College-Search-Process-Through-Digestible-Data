@@ -86,7 +86,7 @@ def signup_page():
         return redirect("/")
     
     if request.method == "POST":
-        
+
         username = request.form["username"]
         
         password = request.form["password"]
@@ -200,6 +200,7 @@ def user_input():
     
     results=results[0]
     
+
     print(results)
     
     if results['sat_score']==None:
