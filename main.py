@@ -182,15 +182,29 @@ def college_browse():
     return render_template("browse.html.jinja", results = colleges)
 
 # Analytics page (college and user graphs for comparison and analysis)
-@app.route("/analytics")
-def analytics_page():
+@app.route("/analytics/page_<page>", methods=["Post", "GET"])
+def analytics_page(page):
+    
+    page=int(page)
+    
+    customer_id=flask_login.current_user.id
+
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM `Graphs`;")
-    graphs = cursor.fetchall()
+    
+    cursor.execute(f"""
+    
+    SELECT * FROM `Colleges`
+    LIMIT 16 OFFSET %s
+    
+    """,(page))
+    
+    results=cursor.fetchall()
+    
     cursor.close()
     conn.close()
-    return render_template("analytics.html.jinja", results = graphs)
+    
+    return render_template("analytics.html.jinja", results=results, page=page)
     # Note: For now, the database connection and data fetcher are placeholders. This WILL be changed later as neccessary.
 
 # User input on settings page
@@ -292,6 +306,7 @@ def update():
         flash("One or more of your fields are invalid!", 'error')
     
     return redirect("/settings")
+
 # Log out
 @app.route('/logout')
 @flask_login.login_required
