@@ -21,6 +21,7 @@
 
     {% for category, message in get_flashed_messages(with_categories=true) %}
 
+<<<<<<< HEAD
     {% if category=="error" %}
     <div class="alert alert-danger" role="alert">
         {{ message }}
@@ -31,6 +32,18 @@
         {{ message }}
     </div>
     {% endif %}
+=======
+        {%if category=="error"%}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+
+        {%elif category=="success"%}
+            <div class="alert alert-warning" role="alert">
+                {{ message }}
+            </div>
+        {%endif%}
+>>>>>>> 3ba5603d789a4a414326bdfebf4b156a7e198a03
 
     {% endfor %}
 
@@ -97,27 +110,26 @@
                     <h1 class="h3 mb-3 fw-bold text-center custom-txt">College Parameters</h1>
 
                     <div class="form-floating my-4">
-                        <input type="text" name="sat_score" class="form-control" id="floatingInput" required
-                            value="{{results['sat_score']}}">
+                        <input type="text" name="sat_score" class="form-control" id="floatingInput"
+                             required value="{{results['sat_score']}}">
                         <label for="floatingInput">SAT Score</label>
                     </div>
 
                     <div class="form-floating my-4">
-                        <input type="text" name="tuition_budget" class="form-control" id="floatingInput" required
-                            value="{{results['tuition_budget']}}">
+                        <input type="text" name="tuition_budget" class="form-control" id="floatingInput"
+                             required value="{{results['tuition_budget']}}">
                         <label for="floatingInput">Tuition</label>
                     </div>
 
                     <div class="form-floating my-4">
-                        <input type="number" name="zip_code" class="form-control" id="floatingInput" required
-                            value="{{results['zip_code']}}">
+                        <input type="number" name="zip_code" class="form-control" id="floatingInput"
+                             required value="{{results['zip_code']}}">
                         <label for="floatingInput">Zip code</label>
                     </div>
 
                     <div class="form-floating my-4">
                         <input type="text" name="population_preferences" class="form-control" id="floatingInput"
-                            required value="{{results['population_preferences']}}">
-
+                             required value="{{results['population_preferences']}}">
                         <label for="floatingInput">Population preferences</label>
                     </div>
 
