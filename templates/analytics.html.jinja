@@ -26,9 +26,9 @@
             <h1 class="h1 text-center">Analytics</h1>
             <h6 class="h6 text-center">Add colleges to your list, generate graphs</h6>
         </div>
-        <form id="search_form">
-            <input value="{{}}" name="query">
-            <input type="submit" >
+        <form id="search_form" class="d-flex mt-3" role="search">
+            <input value="{{query}}" name="query" class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-warning custom-button" type="submit">Search</button>
         </form>
 
         {%for result in results%}
@@ -49,12 +49,18 @@
                 <ul class="pagination mx-auto justify-content-center">
 
                     {%if page==1%}
-                    <li class="page-item"><button form="search_form" name="page" value="1" type="submit" class="page-link" >1</button></li>
-                    <li class="page-item"><button form="search_form" name="page" value="2" type="submit" class="page-link" >2</button></li>
-                    <li class="page-item"><button form="search_form" name="page" value="3" type="submit" class="page-link" >3</button></li>
-                    <li class="page-item"><button form="search_form" name="page" value="4" type="submit" class="page-link" >4</button></li>
-                    <li class="page-item"><button form="search_form" name="page" value="5" type="submit" class="page-link" >5</button></li>
-                    <li class="page-item"><button form="search_form" name="page" value="6" type="submit" class="page-link" >6</button></li>
+                    <li class="page-item"><button form="search_form" name="page" value="1" type="submit"
+                            class="page-link">1</button></li>
+                    <li class="page-item"><button form="search_form" name="page" value="2" type="submit"
+                            class="page-link">2</button></li>
+                    <li class="page-item"><button form="search_form" name="page" value="3" type="submit"
+                            class="page-link">3</button></li>
+                    <li class="page-item"><button form="search_form" name="page" value="4" type="submit"
+                            class="page-link">4</button></li>
+                    <li class="page-item"><button form="search_form" name="page" value="5" type="submit"
+                            class="page-link">5</button></li>
+                    <li class="page-item"><button form="search_form" name="page" value="6" type="submit"
+                            class="page-link">6</button></li>
                     {%else%}
                     <li class="page-item"><a class="page-link" href="/analytics/page_{{page-1}}">Previous</a></li>
                     <li class="page-item"><a class="page-link" href="#">{{page-2}}</a></li>

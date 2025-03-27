@@ -188,6 +188,7 @@ def college_browse():
 def analytics_page():
     
     page = int(request.args.get('page', '1'))
+    query = request.args.get('query')
     
     customer_id=flask_login.current_user.id
 
