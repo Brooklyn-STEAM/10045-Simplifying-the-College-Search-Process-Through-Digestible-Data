@@ -63,8 +63,9 @@ a:hover {
     color:#DEB64B
 }
 
-#brand-name{
-    pointer-events: none;
+#brand-name:hover{
+    background-color: #212529;
+    color: #DEB64B;
 }
 
 .card{
@@ -84,10 +85,13 @@ hr{
     color:#DEB64B;
 }
 
-#cog:hover{
-    background-color: #212529
+#graph{
+    color:#DEB64B;
 }
 
+#logout{
+    color: #DEB64B;
+}
 /* .underline {
     text-decoration: underline;
     text-decoration-color: #202020;
