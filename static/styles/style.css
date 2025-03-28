@@ -101,6 +101,10 @@ hr{
     color:#DEB64B;
 }
 
+#cog:hover{
+    color: #202020;
+}
+
 #graph{
     color:#DEB64B;
 }
