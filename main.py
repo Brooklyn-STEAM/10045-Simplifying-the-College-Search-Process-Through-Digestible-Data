@@ -195,19 +195,29 @@ def analytics_page():
     conn = connect_db()
     cursor = conn.cursor()
     
-    cursor.execute(f"""
+    if query==None:
+       cursor.execute(f"""
+        
+        SELECT * FROM `Colleges`
+        LIMIT 16 OFFSET %s
+        
+        """,((page-1) * 16))
     
-    SELECT * FROM `Colleges`
-    LIMIT 16 OFFSET %s
-    
-    """,((page-1) * 16))
+    else:
+        cursor.execute(f"""
+        
+        SELECT * FROM `Colleges`
+        WHERE `name` LIKE '%{query}%'
+        LIMIT 16 OFFSET {(page-1) * 16}
+        
+        """)
     
     results=cursor.fetchall()
     
     cursor.close()
     conn.close()
     
-    return render_template("analytics.html.jinja", results=results, page=page)
+    return render_template("analytics.html.jinja", results=results, page=page, query=query)
     # Note: For now, the database connection and data fetcher are placeholders. This WILL be changed later as neccessary.
 
 # User input on settings page
