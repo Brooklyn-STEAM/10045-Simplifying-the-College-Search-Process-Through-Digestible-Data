@@ -81,8 +81,28 @@ hr{
     color:#DEB64B;
 }
 
+.custom-button{
+    color: #DEB64B;
+    background-color: transparent;
+    border-color: #DEB64B;
+}
+
+.custom-button:hover{
+    color: #202020;
+    background-color: #DEB64B;
+
+}
+
+.form-control:focus{
+    color: #ffffff;
+}
+
 #cog{
     color:#DEB64B;
+}
+
+#cog:hover{
+    color: #202020;
 }
 
 #graph{
@@ -91,6 +111,20 @@ hr{
 
 #logout{
     color: #DEB64B;
+}
+
+#active-page{
+    background-color: #DEB64B;
+    color: black;
+}
+
+.b-example-divider {
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
 }
 /* .underline {
     text-decoration: underline;
