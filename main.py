@@ -3,14 +3,14 @@ from flask import Flask, render_template, request, redirect, flash, Response
 import pymysql
 from dynaconf import Dynaconf
 import flask_login
-import requests
-import io
-import random
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from math import radians, cos, sin, asin, sqrt
 import matplotlib.pyplot as plt
 import base64
+from io import BytesIO
+import io
+import random
 
 # Declare Flask application
 app = Flask(__name__)
@@ -222,7 +222,7 @@ def browse():
 def analytics_page():
     return render_template('analytics.html.jinja')
 
-@app.route('/plot')
+@app.route('/plot.png')
 def plot():
     #Constant id (change to dynamic later)
     customer_id=1
@@ -406,17 +406,20 @@ def plot():
         # Create a bar graph in the subplot
         bar=subplot.bar(names,data,color='#202020', edgecolor='#DEB64B')
         
-        #  
+        # Changes the first bar to gold
         bar[0].set_color('#DEB64B')
         
+        # Changes the y label range to fit SAT scores
         subplot.set_yticks((1600, 1400, 1200, 1000, 800, 600, 400, 200))
         
+        #Rotates the College labels to 
         subplot.xaxis.set_tick_params(rotation=315)
-        
 
     fig.savefig("graph1.png", dpi='figure')
     
-    return redirect('/analytics')
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
 @app.route("/college/<college_id>", methods=["POST", "GET"])
 def college(college_id):
