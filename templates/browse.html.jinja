@@ -131,6 +131,7 @@
                                                 {%endif%}
                         </div>
                         <div class="container row my-5">
+                        
                                 {%for college in colleges%}
 
                                 <div class="col-3 my-3" style="height: 200px;">
@@ -147,8 +148,7 @@
                                                         <div class="d-flex align-items-end">
 
                                                                 <a href="/college/{{college['id']}}"
-                                                                        class="btn btn-outline-warning custom-button">View
-                                                                        College</a>
+                                                                        class="btn btn-outline-warning custom-button">View College</a>
 
                                                         </div>
                                                 </div>
@@ -156,6 +156,7 @@
                                 </div>
 
                                 {%endfor%}
+
                                 <div class="container mt-5">
                                         <nav aria-label="row justify-content-center mx-auto text-center">
                                                 <ul class="pagination mx-auto justify-content-center">
