@@ -434,7 +434,6 @@ def plot():
         subplot.xaxis.set_tick_params(rotation=315)
 
     fig.savefig("graph1.png", dpi='figure')
-    
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
