@@ -22,6 +22,7 @@
     {% include "components/navbar.html.jinja" %}
 
     {{colleges}}
+    {{empty}}
 
     {%if colleges==()%}
 <main>
@@ -87,35 +88,6 @@
     </div>
 
     {%endif%}
-
-    <div class="container row col-12 my-5">
-
-        {%for college in colleges%}
-
-        <div class="col-3 my-3" style="height: 200px;">
-
-            <div class="card h-100">
-
-                <div class="card-body">
-
-                    <div class="">
-                        <h5 class="card-title">{{college['name']}}</h5>
-                        <p class="card-text text-secondary">{{college['city']}}, {{college['state']}}</p>
-                    </div>
-
-                </div>
-                <div class="card-footer">
-                    <div class="d-flex align-items-end">
-
-                        <a href="/college/{{college['id']}}" class="btn btn-outline-warning custom-button">View
-                            College</a>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        {%endfor%}
-    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

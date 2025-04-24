@@ -328,13 +328,13 @@ def plot():
 
         if compare_sat==True:
             if college["average_sat"]==None:
-                data.append(0)
+                names.remove(college["name"])
             else:
                 data.append(college["average_sat"])
 
         elif compare_tuition==True:
             if college["tuition"]==None:
-                data.append(0)
+                names.remove(college["name"])
             else:
                 data.append(college['tuition'])
                 
@@ -434,6 +434,7 @@ def plot():
         subplot.xaxis.set_tick_params(rotation=315)
 
     fig.savefig("graph1.png", dpi='figure')
+
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
