@@ -6,11 +6,9 @@ import flask_login
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from math import radians, cos, sin, asin, sqrt
-import matplotlib.pyplot as plt
-import base64
-from io import BytesIO
 import io
-import random
+from datetime import datetime
+
 
 # Declare Flask application
 app = Flask(__name__)
@@ -41,7 +39,7 @@ def connect_db():
 # Homepage initialization
 @app.route("/")
 def homepage():
-    return render_template("homepage.html.jinja")
+    return render_template("homepage.html.jinja", now=datetime.now())
 
 if __name__ == '__main__':
     app.run(debug=True)

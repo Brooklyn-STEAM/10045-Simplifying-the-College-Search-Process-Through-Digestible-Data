@@ -104,6 +104,52 @@
         </div>
     </div>
 
+    {# Else #}
+    {%else%}
+
+    <main class="container row g-4 mx-auto">
+
+        <div class="my-5">
+            <h1 class="display-5 fw-bold text-body-emphasis custom-txt text-center">Analytics</h1>
+            <p class="lead mb-4 text-center">Add Colleges to Your List, Generate Graphs</p>
+        </div>
+
+        {# Generated Graph #}
+        <div class="container flex-column d-flex align-items-center justify-content-center">
+            <img class="col-12 border border-warning px-5 py-5" src="/plot.png" alt="my plot">
+        </div>
+    </main>
+
+    {%endif%}
+
+    {# Change category #}
+    <div class="d-flex justify-content-center container my-5 mx-auto">
+        <div class="dropdown col-8">
+            <button class="btn custom-button-inverted dropdown-toggle col-12 fs-4" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false">{{category}}
+            </button>
+
+            <form id="comparing-dropdown">
+
+                <ul class="dropdown-menu col-12" style="position: static;">
+                    <li>
+                        <button form="comparing-dropdown" name="category"
+                            class="dropdown-item custom-txt fs-5" value="1">SAT scores</button>
+                    </li>
+                    <li>
+                        <button form="comparing-dropdown" name="category"
+                            class="dropdown-item custom-txt fs-5" value="2">Tuition</button>
+                    </li>
+                    <li>
+                        <button form="comparing-dropdown" name="category"
+                            class="dropdown-item custom-txt fs-5" value="3">Distance</button>
+                    </li>
+                </ul>
+
+            </form>
+        </div>
+    </div>
+
     <div class="d-flex justify-content-center container row my-5 mx-auto">
 
         {# Individual college cards #}
@@ -171,6 +217,7 @@
                 </div>
             </div>
         </div>
+        {%endif%}
         {%endif%}
 
         {%endfor%}
