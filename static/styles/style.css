@@ -299,6 +299,17 @@ hr {
 footer {
     max-height: 15px;
 }
+
+.sii,
+.sii>* {
+    scale: 95%;
+}
+
+.no-underline a {
+    text-decoration: none;
+}
+
+
 /* .underline {
     text-decoration: underline;
     text-decoration-color: #202020;
