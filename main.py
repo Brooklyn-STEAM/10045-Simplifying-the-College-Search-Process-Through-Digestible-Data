@@ -805,7 +805,7 @@ def update():
         print("Update error:", e)  # Fallback
         flash("One or more of your fields are invalid!", 'error')
     
-    return redirect("/settings")
+    return redirect("/analytics")
 
 
 # Update user settings
@@ -870,3 +870,8 @@ def update_user():
 def logout():
     flask_login.logout_user()
     return redirect('/')
+
+@app.route('/credits')
+@flask_login.login_required
+def credits():
+    return render_template("credits.html.jinja")
