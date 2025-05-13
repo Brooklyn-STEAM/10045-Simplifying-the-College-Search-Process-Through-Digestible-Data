@@ -220,6 +220,25 @@ def browse(page):
     
     colleges=cursor.fetchall()
     
+    if query==None:
+        cursor.execute(f"""
+
+        SELECT `id` FROM `Colleges`
+
+        """)
+    
+    else:
+        cursor.execute(f"""
+        
+        SELECT `id` FROM `Colleges`
+        WHERE `name` LIKE '%{query}%'
+        
+        """)
+    
+    length=math.ceil((len(cursor.fetchall()))/20)
+    
+    
+    
     cursor.execute(f"""
                    
     UPDATE `User` 
@@ -231,7 +250,7 @@ def browse(page):
     cursor.close()
     conn.close()
     
-    return render_template("browse.html.jinja", colleges=colleges, page=page, query=query, customer_id=customer_id)
+    return render_template("browse.html.jinja", colleges=colleges, page=page, query=query, length=length)
     # Note: For now, the database connection and data fetcher are placeholders. This WILL be changed later as neccessary.  
 
 # Search Colleges
