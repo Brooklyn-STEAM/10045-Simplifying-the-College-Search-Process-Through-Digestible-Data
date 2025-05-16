@@ -82,188 +82,112 @@
                                 college matches
                                 for you.</p>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card h-100 border-warning text-center">
-                                <img src="static/images/previewparameters.png"
-                                    class="card-img-top border-bottom border-warning" alt="Preview Parameters">
-                                <div class="card-body">
-                                    <h4 class="h4 card-title custom-txt">Tailor to your Needs</h4>
-                                    <p class="card-text text-light">Input your preferences and generate a tailored list
-                                        of
-                                        college matches
-                                        for you.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card h-100 border-warning text-center">
-                                <img src="static/images/previewanalytics.png"
-                                    class="card-img-top border-bottom border-warning" alt="Preview Analytics">
-                                <div class="card-body">
-                                    <h4 class="h4 card-title custom-txt">Compare and Choose</h4>
-                                    <p class="card-text text-light">Evaluate your compatibility with schools and make
-                                        informed
-                                        decisions.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 border-warning text-center">
-                            <img src="static/images/previewanalytics.png"
-                                class="card-img-top border-bottom border-warning" alt="Preview Analytics">
-                            <div class="card-body">
-                                <h4 class="h4 card-title custom-txt">Compare and Choose</h4>
-                                <p class="card-text text-light">Evaluate your compatibility with schools and make
-                                    informed
-                                    decisions.
-                                </p>
-                            </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-warning text-center">
+                        <img src="static/images/previewanalytics.png" class="card-img-top border-bottom border-warning"
+                            alt="Preview Analytics">
+                        <div class="card-body">
+                            <h4 class="h4 card-title custom-txt">Compare and Choose</h4>
+                            <p class="card-text text-light">Evaluate your compatibility with schools and make
+                                informed
+                                decisions.
+                            </p>
                         </div>
                     </div>
                 </div>
-
-        </section>
+            </div>
         </section>
 
         <div class="b-example-divider py-5"></div>
 
         <div class="container col-lg-6 my-5" id="sign_up">
-            <div class="container col-lg-6 my-5" id="sign_up">
-                <main class="form-signin w-100 m-auto">
-                    <form action="/sign_up" method="post">
-                        <h1 class="h3 mb-4 fw-bold text-center custom-txt">Sign Up Today</h1>
-                        <p class="mb-4 text-center text-muted">And start looking for the right college!</p>
-                        <form action="/sign_up" method="post">
-                            <h1 class="h3 mb-4 fw-bold text-center custom-txt">Sign Up Today</h1>
-                            <p class="mb-4 text-center text-muted">And start looking for the right college!</p>
+            <main class="form-signin w-100 m-auto">
+                <form action="/sign_up" method="post">
+                    <h1 class="h3 mb-4 fw-bold text-center custom-txt">Sign Up Today</h1>
+                    <p class="mb-4 text-center text-muted">And start looking for the right college!</p>
 
-                            {% for message in get_flashed_messages() %}
-                            <div class="alert alert-primary" role="alert">
-                                {{ message }}
+                    {% for message in get_flashed_messages() %}
+                    <div class="alert alert-primary" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="username" class="form-control" id="floatingInput1"
+                            placeholder="JohnDoe123" required>
+                        <label for="floatingInput1">Username</label>
+                    </div>
+
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" name="password" class="form-control" id="floatingPassword"
+                            placeholder="Password" required>
+                        <label for="floatingPassword">Password</label>
+                        <button type="button" id="togglePassword"
+                            class="btn btn-outline-warning position-absolute top-50 end-0 translate-middle-y me-2">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    <div class="form-floating mb-3 position-relative">
+                        <input type="password" name="confirm_password" class="form-control" id="floatingPassword2"
+                            placeholder="Re-enter Password" required>
+                        <label for="floatingPassword2">Re-Enter Password</label>
+                        <button type="button" id="toggleRePassword"
+                            class="btn btn-outline-warning position-absolute top-50 end-0 translate-middle-y me-2">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" name="first_name" class="form-control" id="floatingInput2"
+                                    placeholder="John" required>
+                                <label for="floatingInput2">First Name</label>
                             </div>
-                            {% endfor %}
-                            {% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" name="last_name" class="form-control" id="floatingInput3"
+                                    placeholder="Doe" required>
+                                <label for="floatingInput3">Last Name</label>
+                            </div>
+                        </div>
+                    </div>
 
-                            <div class="form-floating mb-3">
-                                <div class="form-floating mb-3">
-                                    <input type="text" name="username" class="form-control" id="floatingInput1"
-                                        placeholder="JohnDoe123" required>
-                                    <label for="floatingInput1">Username</label>
-                                    <label for="floatingInput1">Username</label>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <div class="form-floating">
+                                <input type="email" name="email" class="form-control" id="floatingInput4"
+                                    placeholder="name@example.com" required>
+                                <label for="floatingInput4">Email Address</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="form-floating">
+                                <input type="number" name="zip_code" class="form-control" id="floatingInput5"
+                                    placeholder="12345" required>
+                                <label for="floatingInput5">Zip Code</label>
+                            </div>
+                        </div>
+                    </div>
 
-                                <div class="form-floating mb-3 position-relative">
-                                    <div class="form-floating mb-3 position-relative">
-                                        <input type="password" name="password" class="form-control"
-                                            id="floatingPassword" placeholder="Password" required>
-                                        placeholder="Password" required>
-                                        <label for="floatingPassword">Password</label>
-                                        <button type="button" id="togglePassword"
-                                            class="btn btn-outline-warning position-absolute top-50 end-0 translate-middle-y me-2">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </div>
+                    <div class="form-check text-start mb-3">
+                        <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Remember me
+                        </label>
+                    </div>
 
-                                    <div class="form-floating mb-3 position-relative">
-                                        <div class="form-floating mb-3 position-relative">
-                                            <input type="password" name="confirm_password" class="form-control"
-                                                id="floatingPassword2" placeholder="Re-enter Password" required>
-                                            placeholder="Re-enter Password" required>
-                                            <label for="floatingPassword2">Re-Enter Password</label>
-                                            <button type="button" id="toggleRePassword"
-                                                class="btn btn-outline-warning position-absolute top-50 end-0 translate-middle-y me-2">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                        </div>
+                    <button class="btn btn-outline-warning w-100 py-2" type="submit">Sign up</button>
+                </form>
+            </main>
+        </div>
+        {% endif %}
 
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <div class="form-floating">
-                                                    <input type="text" name="first_name" class="form-control"
-                                                        id="floatingInput2" placeholder="John" required>
-                                                    <label for="floatingInput2">First Name</label>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <div class="form-floating">
-                                                            <input type="text" name="first_name" class="form-control"
-                                                                id="floatingInput2" placeholder="John" required>
-                                                            <label for="floatingInput2">First Name</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <div class="form-floating">
-                                                            <input type="text" name="last_name" class="form-control"
-                                                                id="floatingInput3" placeholder="Doe" required>
-                                                            <label for="floatingInput3">Last Name</label>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <div class="form-floating">
-                                                                <input type="text" name="last_name" class="form-control"
-                                                                    id="floatingInput3" placeholder="Doe" required>
-                                                                <label for="floatingInput3">Last Name</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="col-md-8 mb-3">
-                                                            <div class="form-floating">
-                                                                <input type="email" name="email" class="form-control"
-                                                                    id="floatingInput4" placeholder="name@example.com"
-                                                                    required>
-                                                                <label for="floatingInput4">Email Address</label>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-8 mb-3">
-                                                                    <div class="form-floating">
-                                                                        <input type="email" name="email"
-                                                                            class="form-control" id="floatingInput4"
-                                                                            placeholder="name@example.com" required>
-                                                                        <label for="floatingInput4">Email
-                                                                            Address</label>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4 mb-3">
-                                                                    <div class="form-floating">
-                                                                        <input type="number" name="zip_code"
-                                                                            class="form-control" id="floatingInput5"
-                                                                            placeholder="12345" required>
-                                                                        <label for="floatingInput5">Zip Code</label>
-                                                                    </div>
-                                                                    <div class="col-md-4 mb-3">
-                                                                        <div class="form-floating">
-                                                                            <input type="number" name="zip_code"
-                                                                                class="form-control" id="floatingInput5"
-                                                                                placeholder="12345" required>
-                                                                            <label for="floatingInput5">Zip Code</label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-check text-start mb-3">
-                                                                    <div class="form-check text-start mb-3">
-                                                                        <input class="form-check-input" type="checkbox"
-                                                                            value="remember-me" id="flexCheckDefault">
-                                                                        <label class="form-check-label"
-                                                                            for="flexCheckDefault">
-                                                                            Remember me
-                                                                        </label>
-                                                                    </div>
-
-                                                                    <button class="btn btn-outline-warning w-100 py-2"
-                                                                        type="submit">Sign up</button>
-                        </form>
-                    </form>
-                </main>
-            </div>
-            {% endif %}
-            {% endif %}
-
-            {% include "components/footer.html.jinja" %}
-            {% include "components/footer.html.jinja" %}
+        {% include "components/footer.html.jinja" %}
     </main>
 
     <script src="/docs/5.3/assets/js/color-modes.js"></script>
