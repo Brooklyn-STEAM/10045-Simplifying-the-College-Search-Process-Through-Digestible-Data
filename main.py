@@ -187,6 +187,7 @@ def browse(page):
 
     page = int(page)
     
+    
     conn = connect_db()
     cursor = conn.cursor()
     
@@ -199,25 +200,6 @@ def browse(page):
                    """,(customer_id))
     
     query=cursor.fetchone()['query']
-    
-    if query==None:
-        cursor.execute(f"""
-
-        SELECT * FROM `Colleges`
-        LIMIT 16 OFFSET {(page-1) * 16}
-
-        """)
-    
-    else:
-        cursor.execute(f"""
-        
-        SELECT * FROM `Colleges`
-        WHERE `name` LIKE '%{query}%'
-        LIMIT 16 OFFSET {(page-1) * 16}
-        
-        """)
-    
-    colleges=cursor.fetchall()
     
     if query==None:
         cursor.execute(f"""
@@ -236,6 +218,32 @@ def browse(page):
     
     length=math.ceil((len(cursor.fetchall()))/16)
     
+    if page>length or page<1:
+        flash("This page does not exist!","error")
+        if page>length:
+            return redirect(f"/browse/{length}")
+        else:
+            return redirect(f"/browse/1")
+        
+
+    if query==None:
+        cursor.execute(f"""
+
+        SELECT * FROM `Colleges`
+        LIMIT 16 OFFSET {(page-1) * 16}
+
+        """)
+    
+    else:
+        cursor.execute(f"""
+        
+        SELECT * FROM `Colleges`
+        WHERE `name` LIKE '%{query}%'
+        LIMIT 16 OFFSET {(page-1) * 16}
+        
+        """)
+    
+    colleges=cursor.fetchall()
 
     if page<4:
         page_range=[1,6]
