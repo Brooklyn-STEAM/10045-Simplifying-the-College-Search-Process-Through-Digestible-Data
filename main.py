@@ -303,7 +303,7 @@ def search():
         "admit_min": request.form.get("admit_min", ""),
         "admit_max": request.form.get("admit_max", ""),
         "city": request.form.get("city", ""),
-        "state": request.form.get("state", "")
+        "state": request.form.get("state", "")[:2]
     }
 
     # Store filters in the session
@@ -960,9 +960,3 @@ def credits():
 def logout():
     flask_login.logout_user()
     return redirect('/')
-
-@app.route('/credits')
-@flask_login.login_required
-def credits():
-    return render_template("credits.html.jinja")
-

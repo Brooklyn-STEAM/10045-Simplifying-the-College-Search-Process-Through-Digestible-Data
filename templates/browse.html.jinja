@@ -37,67 +37,146 @@
                         <form class="row g-3" action="/browse/search" method="post">
 
                                 <!-- Search Bar -->
-                                <div class="col-md-6">
+                                <div class="col-md-6 p-2">
+                                        <h3 class="h3">Search for a College...</h3>
                                         <input name="query" value="{{ query or '' }}" class="form-control" type="text"
                                                 placeholder="Search by name" aria-label="Search">
                                 </div>
 
-                                <!-- Tuition Range -->
-                                <div class="col-md-3">
-                                        <input type="number" name="tuition_min" class="form-control"
-                                                placeholder="Min Tuition">
-                                </div>
-                                <div class="col-md-3">
-                                        <input type="number" name="tuition_max" class="form-control"
-                                                placeholder="Max Tuition">
+                                {# Additional Options #}
+                                <div class="row" id="additional-options">
+                                        <!-- Tuition Range -->
+                                        <div class="col-md-6">
+                                                <div class="row p-2">
+                                                        <h4 class="h4">Tuition Range</h4>
+                                                        <div class="col">
+                                                                <input type="number" name="tuition_min"
+                                                                        class="form-control" placeholder="Minimum">
+                                                        </div>
+                                                        <div class="col">
+                                                                <input type="number" name="tuition_max"
+                                                                        class="form-control" placeholder="Maximum">
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <!-- SAT Range -->
+                                        <div class="col-md-6">
+                                                <div class="row p-2">
+                                                        <h4 class="h4">SAT Range</h4>
+                                                        <div class="col">
+                                                                <input type="number" name="sat_min" class="form-control"
+                                                                        placeholder="Minimum">
+                                                        </div>
+                                                        <div class="col">
+                                                                <input type="number" name="sat_max" class="form-control"
+                                                                        placeholder="Maximum">
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <!-- Population Range -->
+                                        <div class="col-md-6">
+                                                <div class="row p-2">
+                                                        <h4 class="h4">Population Range</h4>
+                                                        <div class="col">
+                                                                <input type="number" name="pop_min" class="form-control"
+                                                                        placeholder="Minimum">
+                                                        </div>
+                                                        <div class="col">
+                                                                <input type="number" name="pop_max" class="form-control"
+                                                                        placeholder="Maximum">
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <!-- Admission Rate Range -->
+                                        <div class="col-md-6">
+                                                <div class="row p-2">
+                                                        <h4 class="h4">Admission Rate Range</h4>
+                                                        <div class="col">
+                                                                <input type="number" name="admit_min"
+                                                                        class="form-control" placeholder="Minimum (%)"
+                                                                        step="0.1">
+                                                        </div>
+                                                        <div class="col">
+                                                                <input type="number" name="admit_max"
+                                                                        class="form-control" placeholder="Maximum (%)"
+                                                                        step="0.1">
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <!-- City Textbox -->
+                                        <div class="col-md-6">
+                                                <div class="row p-2">
+                                                        <h4 class="h4">City</h4>
+                                                        <div class="col">
+                                                                <input type="text" name="city" class="form-control"
+                                                                        placeholder="City">
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <!-- State Searchable Dropdown -->
+                                        <div class="col-md-6">
+                                                <div class="row p-2">
+                                                        <h4 class="h4">State/Territory</h4>
+                                                        <div class="col">
+                                                                <select class="form-select form-control back"
+                                                                        name="state" data-live-search="true"
+                                                                        title="Select State" id="state-dropdown">
+                                                                        <option class="state-text" value="">Any</option>
+                                                                        {% for s in
+                                                                        ["AL - Alabama","AK - Alaska","AZ - Arizona","AR
+                                                                        - Arkansas","CA
+                                                                        -
+                                                                        California","CO - Colorado","CT -
+                                                                        Connecticut","DE -
+                                                                        Delaware","FL - Florida","GA - Georgia","HI -
+                                                                        Hawaii","ID -
+                                                                        Idaho","IL -
+                                                                        Illinois","IN - Indiana","IA - Iowa","KS -
+                                                                        Kansas","KY - Kentucky","LA - Louisiana","ME -
+                                                                        Maine","MD -
+                                                                        Maryland","MA - Massachusetts","MI -
+                                                                        Michigan","MN -
+                                                                        Minnesota","MS - Mississippi","MO -
+                                                                        Missouri","MT - Montana","NE
+                                                                        -
+                                                                        Nebraska","NV - Nevada","NH - New Hampshire","NJ
+                                                                        -
+                                                                        New Jersey","NM - New Mexico","NY - New
+                                                                        York","NC - North
+                                                                        Carolina","ND
+                                                                        - North Dakota","OH - Ohio","OK - Oklahoma","OR
+                                                                        - Oregon","PA - Pennsylvania","RI - Rhode
+                                                                        Island","SC - South
+                                                                        Carolina","SD - South Dakota","TN -
+                                                                        Tennessee","TX -
+                                                                        Texas","UT - Utah","VT - Vermont","VA -
+                                                                        Virginia","WA -
+                                                                        Washington","WV
+                                                                        - West Virgiinia","WI - Wisconsin","WY -
+                                                                        Wyoming","DC - District of Columbia","PR -
+                                                                        Puerto Rico","GU -
+                                                                        Guam","VI
+                                                                        - Virgin Islands","AS - American Samoa","MH -
+                                                                        Marshall Islands", "MP - Northern Mariana
+                                                                        Islands"]
+                                                                        %}\
+                                                                        <option class="state-text" value="{{ s }}" {% if
+                                                                                filters.state==s %}selected{% endif %}>
+                                                                                {{
+                                                                                s }}</option>
+                                                                        {% endfor %}
+                                                                </select>
+                                                        </div>
+                                                </div>
+
+                                        </div>
                                 </div>
 
-                                <!-- SAT Range -->
-                                <div class="col-md-3">
-                                        <input type="number" name="sat_min" class="form-control" placeholder="Min SAT">
-                                </div>
-                                <div class="col-md-3">
-                                        <input type="number" name="sat_max" class="form-control" placeholder="Max SAT">
-                                </div>
-
-                                <!-- Population Range -->
-                                <div class="col-md-3">
-                                        <input type="number" name="pop_min" class="form-control"
-                                                placeholder="Min Population">
-                                </div>
-                                <div class="col-md-3">
-                                        <input type="number" name="pop_max" class="form-control"
-                                                placeholder="Max Population">
-                                </div>
-
-                                <!-- Admission Rate Range -->
-                                <div class="col-md-3">
-                                        <input type="number" name="admit_min" class="form-control"
-                                                placeholder="Min Admission (%)" step="0.1">
-                                </div>
-                                <div class="col-md-3">
-                                        <input type="number" name="admit_max" class="form-control"
-                                                placeholder="Max Admission (%)" step="0.1">
-                                </div>
-
-                                <!-- City Textbox -->
-                                <div class="col-md-6">
-                                        <input type="text" name="city" class="form-control" placeholder="City">
-                                </div>
-
-                                <!-- State Searchable Dropdown -->
-                                <div class="col-md-6">
-                                        <select class="selectpicker form-control" name="state" data-live-search="true"
-                                                title="Select State">
-                                                <option value="">Any</option>
-                                                {% for s in
-                                                ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC","PR","GU","VI","AS","MP"]
-                                                %}\
-                                                <option value="{{ s }}" {% if filters.state==s %}selected{% endif %}>{{
-                                                        s }}</option>
-                                                {% endfor %}
-                                        </select>
-                                </div>
 
                                 <!-- Buttons -->
                                 <div class="col-12">
