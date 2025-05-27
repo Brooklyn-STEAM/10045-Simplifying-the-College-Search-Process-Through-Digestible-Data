@@ -37,10 +37,6 @@ def connect_db():
     )
     return conn
 
-# Homepage initialization
-@app.route("/")
-def homepage():
-    return render_template("homepage.html.jinja", now=datetime.now())
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -82,6 +78,38 @@ def load_user(id):
     conn.close
     if result is not None:
         return User(result["id"], result["name"], result["username"], result["email"])
+    
+# Homepage initialization
+@app.route("/")
+def homepage():
+
+    user=None
+    empty=None
+
+    if flask_login.current_user.is_anonymous==False:
+
+        customer_id=flask_login.current_user.id
+        conn = connect_db()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT * 
+            FROM `User` 
+            WHERE `id` = %s 
+    """,(customer_id))
+
+        user=cursor.fetchone()
+
+        user_parameters=[user['zip_code'], user['sat_score'], user['tuition_budget'], user['population_preferences']]
+
+        empty=False
+
+        for parameter in user_parameters:
+            if parameter==None:
+                empty=True
+
+
+    return render_template("homepage.html.jinja", now=datetime.now(), user=user, empty=empty)
     
 ## Signup page
 @app.route("/sign_up", methods=["POST", "GET"])
@@ -673,7 +701,16 @@ def college(college_id):
     student=cursor.fetchone()
     
     page=student['page']
-    
+
+    empty=False
+    parameters=[student['zip_code'],student['sat_score'],student['tuition_budget'],student['population_preferences']]
+
+    for parameter in parameters:
+        if parameter==None:
+            empty=True
+
+
+
     cursor.execute(f"""
                    
     SELECT * from `Colleges`
@@ -728,7 +765,7 @@ def college(college_id):
             """, (customer_id))
     user = cursor.fetchone()
 
-    return render_template("college.html.jinja", user=user, college_population=college_population, college_tuition=college_tuition, college_sat=college_sat, college_id=college_id, college=college, added=added, page=page)
+    return render_template("college.html.jinja", user=user, student=student, college_population=college_population, college_tuition=college_tuition, college_sat=college_sat, college_id=college_id, college=college, added=added, page=page, empty=empty)
 
 @app.route('/race_graph')
 def race_graph():
@@ -1030,4 +1067,5 @@ def credits():
 def logout():
     flask_login.logout_user()
     return redirect('/')
+
 
