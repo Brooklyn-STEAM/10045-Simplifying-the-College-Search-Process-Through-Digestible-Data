@@ -765,7 +765,7 @@ def college(college_id):
             """, (customer_id))
     user = cursor.fetchone()
 
-    return render_template("college.html.jinja", user=user, student=student, college_population=college_population, college_tuition=college_tuition, college_sat=college_sat, college_id=college_id, college=college, added=added, page=page, empty=empty)
+    return render_template("college.html.jinja", user=user, college_population=college_population, college_tuition=college_tuition, college_sat=college_sat, college_id=college_id, college=college, added=added, page=page, student=student)
 
 @app.route('/race_graph')
 def race_graph():
@@ -1048,7 +1048,8 @@ def update_user():
 
         # Flash success message
         flash("Settings updated successfully", "success")
-        
+    
+    # Flash error in the case of error
     except Exception as e:
         flash(f"An error occurred while updating your settings! Error: {str(e)}", "error")
         print(e)
@@ -1067,5 +1068,3 @@ def credits():
 def logout():
     flask_login.logout_user()
     return redirect('/')
-
-
