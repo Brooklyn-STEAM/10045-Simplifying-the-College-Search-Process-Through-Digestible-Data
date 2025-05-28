@@ -645,6 +645,14 @@ def plot():
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+@app.route('/gender_graph.png')
+def gender_graph():
+    
+    
+    
+    
+    return Response(output.getvalue(), mimetype='image/png')
+    
 # Individual College Page
 @app.route("/college/<college_id>", methods=["POST", "GET"])
 def college(college_id):
@@ -933,9 +941,4 @@ def credits():
 def logout():
     flask_login.logout_user()
     return redirect('/')
-
-@app.route('/credits')
-@flask_login.login_required
-def credits():
-    return render_template("credits.html.jinja")
 
