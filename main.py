@@ -9,6 +9,7 @@ from math import radians, cos, sin, asin, sqrt
 import io
 from datetime import datetime
 import math
+import pandas as pd
 
 # Declare Flask application
 app = Flask(__name__)
@@ -645,14 +646,6 @@ def plot():
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/gender_graph.png')
-def gender_graph():
-    
-    
-    
-    
-    return Response(output.getvalue(), mimetype='image/png')
-    
 # Individual College Page
 @app.route("/college/<college_id>", methods=["POST", "GET"])
 def college(college_id):
@@ -661,6 +654,14 @@ def college(college_id):
     
     conn = connect_db()
     cursor = conn.cursor()
+    
+    cursor.execute(f"""
+                   
+    UPDATE `User` 
+    SET `current_college`=%s
+    WHERE `id` = %s               
+                   
+                   """,(college_id, customer_id))
     
     cursor.execute(f"""
                    
@@ -728,6 +729,92 @@ def college(college_id):
     user = cursor.fetchone()
 
     return render_template("college.html.jinja", user=user, college_population=college_population, college_tuition=college_tuition, college_sat=college_sat, college_id=college_id, college=college, added=added, page=page)
+
+@app.route('/gender_graph')
+def gender_graph():
+    
+    #Initialization
+    customer_id=flask_login.current_user.id
+    conn = connect_db()
+    cursor = conn.cursor()
+    
+    cursor.execute(f"""
+                   
+    SELECT * from `User`
+    WHERE `id`=%s               
+                   
+                   """,(customer_id))
+    
+    college_id=cursor.fetchone()['current_college']
+    
+    #Get the user's compared category from the database
+    cursor.execute(f"""
+                   
+    SELECT white_ratio, black_ratio, hispanic_ratio, asian_ratio 
+    FROM `Colleges` 
+    WHERE `id`=%s
+                   
+                   """,(college_id))
+    
+    college=cursor.fetchone()
+    
+    college["unknown_ratio"]=1-(college["white_ratio"]+college["black_ratio"]+college["hispanic_ratio"]+college["asian_ratio"])
+    
+    college=pd.DataFrame.from_dict(college, orient="index")
+    print("\n" * 5)
+    print(college)
+    print("\n" * 5)
+    
+    college = college.sort_values(by=0,ascending=False)
+    print("\n" * 5)
+    print(college)
+    print("\n" * 5)
+    assert college
+    
+    #Creates figure
+    fig=Figure(figsize=(10,6), facecolor='#202020', edgecolor='#ffffff')
+
+    #Set figure background color
+    fig.set_facecolor('#202020')
+    
+    #Tightens figure
+    fig.set_layout_engine("tight")
+
+    #Creates a subplot over figure
+    subplot=fig.subplots(1)
+
+    #Subplot background color
+    subplot.set_facecolor('#202020')
+    
+    subplot.tick_params("both", colors="#DEB64B", labelcolor="#DEB64B")
+    
+    #Spine colors
+    subplot.spines['bottom'].set_color('#DEB64B')
+    subplot.spines['top'].set_color('#DEB64B') 
+    subplot.spines['right'].set_color('#DEB64B')
+    subplot.spines['left'].set_color('#DEB64B')
+    
+    #Axes colors
+    subplot.xaxis.label.set_color('#DEB64B')
+    subplot.yaxis.label.set_color('#DEB64B')
+    
+    #Creates a bar graph in the subplot
+    pie=subplot.pie(
+        x=[college['white_ratio'], college['black_ratio'], college['hispanic_ratio'], college['asian_ratio'], college['unknown_ratio']].sort, 
+        labels=['white', 'black', 'hispanic', 'asian', 'unknown'], 
+        colors=['#DEB64B', 'red', 'yellow', 'pink', 'orange'])
+        
+    fig.savefig("graph1.png", dpi='figure')
+
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/race_graph.png')
+def race_graph():
+    
+    return
 
 # Add College from College Page
 @app.route("/college/<college_id>/add", methods=["POST", "GET"])
