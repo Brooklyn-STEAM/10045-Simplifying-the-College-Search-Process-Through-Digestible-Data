@@ -39,8 +39,8 @@
                                 <!-- Search Bar -->
                                 <div class="col-md-6 p-2">
                                         <h3 class="h3 custom-txt">Search for a College...</h3>
-                                        <input name="query" value="{{ query or '' }}" class="form-control" type="text"
-                                                placeholder="Search by name" aria-label="Search">
+                                        <input name="query" value="{{ filters.query or '' }}" class="form-control"
+                                                type="text" placeholder="Search by name" aria-label="Search">
                                 </div>
 
                                 {# Additional Options #}
@@ -51,11 +51,13 @@
                                                         <h4 class="h4 custom-txt">Tuition Range</h4>
                                                         <div class="col">
                                                                 <input type="number" name="tuition_min"
-                                                                        class="form-control" placeholder="Minimum">
+                                                                        class="form-control" placeholder="Minimum"
+                                                                        value="{{ filters.tuition_min or '' }}">
                                                         </div>
                                                         <div class="col">
                                                                 <input type="number" name="tuition_max"
-                                                                        class="form-control" placeholder="Maximum">
+                                                                        class="form-control" placeholder="Maximum"
+                                                                        value="{{ filters.tuition_max or '' }}">
                                                         </div>
                                                 </div>
                                         </div>
@@ -66,11 +68,13 @@
                                                         <h4 class="h4 custom-txt">SAT Range</h4>
                                                         <div class="col">
                                                                 <input type="number" name="sat_min" class="form-control"
-                                                                        placeholder="Minimum">
+                                                                        placeholder="Minimum"
+                                                                        value="{{ filters.sat_min or '' }}">
                                                         </div>
                                                         <div class="col">
                                                                 <input type="number" name="sat_max" class="form-control"
-                                                                        placeholder="Maximum">
+                                                                        placeholder="Maximum"
+                                                                        value="{{ filters.sat_max or '' }}">
                                                         </div>
                                                 </div>
                                         </div>
@@ -81,11 +85,13 @@
                                                         <h4 class="h4 custom-txt">Population Range</h4>
                                                         <div class="col">
                                                                 <input type="number" name="pop_min" class="form-control"
-                                                                        placeholder="Minimum">
+                                                                        placeholder="Minimum"
+                                                                        value="{{ filters.pop_min or '' }}">
                                                         </div>
                                                         <div class="col">
                                                                 <input type="number" name="pop_max" class="form-control"
-                                                                        placeholder="Maximum">
+                                                                        placeholder="Maximum"
+                                                                        value="{{ filters.pop_max or '' }}">
                                                         </div>
                                                 </div>
                                         </div>
@@ -97,12 +103,14 @@
                                                         <div class="col">
                                                                 <input type="number" name="admit_min"
                                                                         class="form-control" placeholder="Minimum (%)"
-                                                                        step="0.1">
+                                                                        step="0.1"
+                                                                        value="{{ filters.admit_min or '' }}">
                                                         </div>
                                                         <div class="col">
                                                                 <input type="number" name="admit_max"
                                                                         class="form-control" placeholder="Maximum (%)"
-                                                                        step="0.1">
+                                                                        step="0.1"
+                                                                        value="{{ filters.admit_max or '' }}">
                                                         </div>
                                                 </div>
                                         </div>
@@ -113,7 +121,8 @@
                                                         <h4 class="h4 custom-txt">City</h4>
                                                         <div class="col">
                                                                 <input type="text" name="city" class="form-control"
-                                                                        placeholder="City">
+                                                                        placeholder="City"
+                                                                        value="{{ filters.city or '' }}">
                                                         </div>
                                                 </div>
                                         </div>
@@ -123,54 +132,20 @@
                                                 <div class="row p-2">
                                                         <h4 class="h4 custom-txt">State/Territory</h4>
                                                         <div class="col">
-                                                                <select class="form-select form-control back"
+                                                                <select class="form-select form-control back selectpicker"
                                                                         name="state" data-live-search="true"
                                                                         title="Select State" id="state-dropdown">
                                                                         <option class="state-text" value="">Any</option>
                                                                         {% for s in
-                                                                        ["AL - Alabama","AK - Alaska","AZ - Arizona","AR
-                                                                        - Arkansas","CA
-                                                                        -
-                                                                        California","CO - Colorado","CT -
-                                                                        Connecticut","DE -
-                                                                        Delaware","FL - Florida","GA - Georgia","HI -
-                                                                        Hawaii","ID -
-                                                                        Idaho","IL -
-                                                                        Illinois","IN - Indiana","IA - Iowa","KS -
-                                                                        Kansas","KY - Kentucky","LA - Louisiana","ME -
-                                                                        Maine","MD -
-                                                                        Maryland","MA - Massachusetts","MI -
-                                                                        Michigan","MN -
-                                                                        Minnesota","MS - Mississippi","MO -
-                                                                        Missouri","MT - Montana","NE
-                                                                        -
-                                                                        Nebraska","NV - Nevada","NH - New Hampshire","NJ
-                                                                        -
-                                                                        New Jersey","NM - New Mexico","NY - New
-                                                                        York","NC - North
-                                                                        Carolina","ND
-                                                                        - North Dakota","OH - Ohio","OK - Oklahoma","OR
-                                                                        - Oregon","PA - Pennsylvania","RI - Rhode
-                                                                        Island","SC - South
-                                                                        Carolina","SD - South Dakota","TN -
-                                                                        Tennessee","TX -
-                                                                        Texas","UT - Utah","VT - Vermont","VA -
-                                                                        Virginia","WA -
-                                                                        Washington","WV
-                                                                        - West Virgiinia","WI - Wisconsin","WY -
-                                                                        Wyoming","DC - District of Columbia","PR -
-                                                                        Puerto Rico","GU -
-                                                                        Guam","VI
-                                                                        - Virgin Islands","AS - American Samoa","MH -
-                                                                        Marshall Islands", "MP - Northern Mariana
-                                                                        Islands"]
-                                                                        %}\
+                                                                        ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC","PR","GU","VI","AS","MH","MP"]
+                                                                        %}
                                                                         <option class="state-text" value="{{ s }}" {% if
                                                                                 filters.state==s %}selected{% endif %}>
                                                                                 {{
                                                                                 s }}</option>
                                                                         {% endfor %}
                                                                 </select>
+
                                                         </div>
                                                 </div>
 
@@ -187,6 +162,7 @@
                                 </div>
                         </form>
                 </div>
+
 
 
                 <div class="container mt-5">

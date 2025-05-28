@@ -247,35 +247,42 @@ def browse(page):
     length = math.ceil(total_colleges / 16)
 
     # Ensure page is within valid range
-    if page > length or page < 1:
-        flash("This page does not exist!", "error")
-        # Redirect to the last page if current page is beyond the last page
-        if page > length and length > 0:
-             return redirect(f"/browse/{length}")
-        # Redirect to the first page if current page is less than 1 or length is 0
-        else:
-             return redirect(f"/browse/1")
+    # Redirect to page 1 if page is less than 1
+    if page < 1:
+        flash("Invalid page number.", "error")
+        return redirect("/browse/1")
 
+    # Redirect to the last page if current page is beyond the last page, ONLY if there are colleges
+    if length > 0 and page > length:
+        flash("This page does not exist!", "error")
+        return redirect(f"/browse/{length}")
+
+    # If length is 0, any page request (including page 1) should just render the empty results
+    # No redirect needed if length is 0
 
     # Add LIMIT and OFFSET for pagination
-    sql += " LIMIT 16 OFFSET %s"
-    params.append((page - 1) * 16)
+    # Only apply LIMIT/OFFSET if there are colleges to display
+    colleges = []
+    if total_colleges > 0:
+        sql += " LIMIT 16 OFFSET %s"
+        params.append((page - 1) * 16)
+        cursor.execute(sql, params)
+        colleges = cursor.fetchall()
 
-    cursor.execute(sql, params)
-    colleges = cursor.fetchall()
 
     # Calculate page range for pagination display
-    # This logic seems a bit complex, let's simplify it to show a fixed number of pages around the current page
-    # For example, show 5 pages: current page, 2 before, 2 after
     start_page = max(1, page - 2)
     end_page = min(length, page + 2)
     # Adjust start/end if near the boundaries
     if page <= 3:
         end_page = min(length, 5)
-    if page >= length - 2:
+    if length > 5 and page >= length - 2: # Only adjust if there are enough pages to shift
         start_page = max(1, length - 4)
 
+    # Ensure page_range is not empty if length is 0, maybe show [1] or [] depending on desired UI
     page_range = list(range(start_page, end_page + 1))
+    if length == 0:
+        page_range = [1] # Or [] if you don't want to show page 1 when no results
 
 
     return render_template("browse.html.jinja",
@@ -303,7 +310,7 @@ def search():
         "admit_min": request.form.get("admit_min", ""),
         "admit_max": request.form.get("admit_max", ""),
         "city": request.form.get("city", ""),
-        "state": request.form.get("state", "")[:2]
+        "state": request.form.get("state", "")
     }
 
     # Store filters in the session
@@ -326,23 +333,12 @@ def search():
 # Reset Page and Query
 @app.route("/browse_reset", methods=["POST", "GET"])
 def reset():
-    
-    customer_id=flask_login.current_user.id
-    
-    conn=connect_db()
-    cursor=conn.cursor()
-    
-    query=None
-    
-    page=1
-    
-    cursor.execute(f"""
-                   
-    UPDATE `User`
-    SET `query`= %s, `page`= %s 
-    WHERE id = %s;             
-                   """,(query, page, customer_id))
-    
+    # Clear all filters from the session
+    if "filters" in session:
+        del session["filters"]
+
+    # Redirect to the first page of browse results
+    flash("Your preferences have been reset. Why not start a new search?", 'info')
     return redirect("/browse/1")
 
 # Get Data for Graph Generation
