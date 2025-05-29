@@ -730,8 +730,8 @@ def college(college_id):
 
     return render_template("college.html.jinja", user=user, college_population=college_population, college_tuition=college_tuition, college_sat=college_sat, college_id=college_id, college=college, added=added, page=page)
 
-@app.route('/gender_graph')
-def gender_graph():
+@app.route('/race_graph')
+def race_graph():
     
     #Initialization
     customer_id=flask_login.current_user.id
@@ -811,8 +811,10 @@ def gender_graph():
     
     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/race_graph.png')
-def race_graph():
+@app.route('/gender_graph.png')
+def gender_graph():
+    
+    
     
     return
 
