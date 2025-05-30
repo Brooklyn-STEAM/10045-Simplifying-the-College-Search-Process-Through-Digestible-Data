@@ -10,6 +10,8 @@ import io
 from datetime import datetime
 import math
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle, Wedge, Polygon, Ellipse
 
 # Declare Flask application
 app = Flask(__name__)
@@ -825,11 +827,19 @@ def race_graph():
     print(college)
     print("\n" * 5)
     
+    college.rename(index={"white_ratio": "White Ratio", 
+                          "black_ratio": "Black Ratio", 
+                          "hispanic_ratio": "Hispanic Ratio", 
+                          "asian_ratio": "Asian Ratio", 
+                          "unknown_ratio":"Unknown Ratio"})
+
+    
     college = college.sort_values(by=0,ascending=False)
     print("\n" * 5)
     print(college)
     print("\n" * 5)
-    assert college
+    
+
     
     #Creates figure
     fig=Figure(figsize=(10,6), facecolor='#202020', edgecolor='#ffffff')
@@ -858,12 +868,30 @@ def race_graph():
     subplot.xaxis.label.set_color('#DEB64B')
     subplot.yaxis.label.set_color('#DEB64B')
     
+    print(list(college.index))
+    
     #Creates a bar graph in the subplot
     pie=subplot.pie(
-        x=[college['white_ratio'], college['black_ratio'], college['hispanic_ratio'], college['asian_ratio'], college['unknown_ratio']].sort, 
-        labels=['white', 'black', 'hispanic', 'asian', 'unknown'], 
-        colors=['#DEB64B', 'red', 'yellow', 'pink', 'orange'])
         
+        x=college[0], 
+        labels=list(college.index), 
+        colors=['#DEB64B', '#BF4E30', '#197BBD', '#DED9E2', '#77BFA3'],
+        wedgeprops={'edgecolor':'black',
+                    'linewidth': 2,
+                    'antialiased': True},
+        autopct=('%1.1f%%')
+        )
+    
+    #circle=Circle(xy=(0.5,0.5), radius=0.3, color="white")
+    
+    #fig.add_artist(circle)
+        
+    pie[1][0].set_color("#DEB64B")
+    pie[1][1].set_color("#BF4E30")
+    pie[1][2].set_color("#197BBD")
+    pie[1][3].set_color("#DED9E2")
+    pie[1][4].set_color("#77BFA3")
+    
     fig.savefig("graph1.png", dpi='figure')
 
     output = io.BytesIO()
@@ -873,9 +901,7 @@ def race_graph():
 
 @app.route('/gender_graph.png')
 def gender_graph():
-    
-    
-    
+
     return
 
 # Add College from College Page
