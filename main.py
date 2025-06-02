@@ -622,6 +622,7 @@ def analytics_page():
         comparing=d["comparing"],
         category=d["category"],
     )
+    # Revert code due to error!
 
 
 # Category Switch for Analytics
