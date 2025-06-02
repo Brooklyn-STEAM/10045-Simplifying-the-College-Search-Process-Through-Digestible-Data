@@ -547,7 +547,13 @@ def analytics_page():
                    
                    """,(comparing_category,customer_id))
 
-    d=graph_data(comparing_category)      
+    d=graph_data(comparing_category)
+
+    if d['empty']==True:
+        flash(f"Colleges that Appear Red are Missing the Requested Data")
+
+    for college in d["colleges"]:
+        return
 
     return render_template('analytics.html.jinja', colleges=d["colleges"], empty=d["empty"], comparing=d["comparing"], category=d["category"])
 
