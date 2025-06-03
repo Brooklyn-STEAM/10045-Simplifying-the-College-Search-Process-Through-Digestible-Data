@@ -616,6 +616,8 @@ def analytics_page():
                    
                    """,(comparing_category,customer_id))
 
+    d=graph_data(comparing_category)
+    
     return render_template(
         "analytics.html.jinja",
         colleges=d["colleges"],
