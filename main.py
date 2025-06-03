@@ -792,7 +792,7 @@ def college(college_id):
 
     return render_template("college.html.jinja", user=user, college_population=college_population, college_tuition=college_tuition, college_sat=college_sat, college_id=college_id, college=college, added=added, page=page, student=student)
 
-@app.route('/race_graph')
+@app.route('/race_graph.png')
 def race_graph():
     
     #Initialization
@@ -800,6 +800,7 @@ def race_graph():
     conn = connect_db()
     cursor = conn.cursor()
     
+    #Get user data from database
     cursor.execute(f"""
                    
     SELECT * from `User`
@@ -809,7 +810,7 @@ def race_graph():
     
     college_id=cursor.fetchone()['current_college']
     
-    #Get the user's compared category from the database
+    #Get race data from college
     cursor.execute(f"""
                    
     SELECT white_ratio, black_ratio, hispanic_ratio, asian_ratio 
@@ -820,29 +821,24 @@ def race_graph():
     
     college=cursor.fetchone()
     
+    #Find the percentage of unknown students
     college["unknown_ratio"]=1-(college["white_ratio"]+college["black_ratio"]+college["hispanic_ratio"]+college["asian_ratio"])
     
+    #Rename dictionary keys
+    college['White Ratio']=college.pop('white_ratio')
+    college['Black Ratio']=college.pop('black_ratio')
+    college['Hispanic Ratio']=college.pop('hispanic_ratio')
+    college['Asian Ratio']=college.pop('asian_ratio')
+    college['Unknown Ratio']=college.pop('unknown_ratio')
+    
+    #Creates a dataframe from college race data
     college=pd.DataFrame.from_dict(college, orient="index")
-    print("\n" * 5)
-    print(college)
-    print("\n" * 5)
     
-    college.rename(index={"white_ratio": "White Ratio", 
-                          "black_ratio": "Black Ratio", 
-                          "hispanic_ratio": "Hispanic Ratio", 
-                          "asian_ratio": "Asian Ratio", 
-                          "unknown_ratio":"Unknown Ratio"})
-
-    
+    #Sorts data in race dataframe
     college = college.sort_values(by=0,ascending=False)
-    print("\n" * 5)
-    print(college)
-    print("\n" * 5)
-    
-
     
     #Creates figure
-    fig=Figure(figsize=(10,6), facecolor='#202020', edgecolor='#ffffff')
+    fig=Figure(figsize=(7,7), facecolor='#202020', edgecolor='#ffffff')
 
     #Set figure background color
     fig.set_facecolor('#202020')
@@ -856,19 +852,87 @@ def race_graph():
     #Subplot background color
     subplot.set_facecolor('#202020')
     
-    subplot.tick_params("both", colors="#DEB64B", labelcolor="#DEB64B")
+    #Creates a bar graph in the subplot
+    pie=subplot.pie(
+        
+        x=college[0], 
+        labels=list(college.index), 
+        colors=['#DEB64B', '#BF4E30', '#197BBD', '#DED9E2', '#77BFA3'],
+        wedgeprops={'edgecolor':'black',
+                    'linewidth': 2,
+                    'antialiased': True},
+        autopct=('%1.1f%%')
+        )
     
-    #Spine colors
-    subplot.spines['bottom'].set_color('#DEB64B')
-    subplot.spines['top'].set_color('#DEB64B') 
-    subplot.spines['right'].set_color('#DEB64B')
-    subplot.spines['left'].set_color('#DEB64B')
+    #Changes colors of the wedges in chart
+    pie[1][0].set_color("#DEB64B")
+    pie[1][1].set_color("#BF4E30")
+    pie[1][2].set_color("#197BBD")
+    pie[1][3].set_color("#DED9E2")
+    pie[1][4].set_color("#77BFA3")
     
-    #Axes colors
-    subplot.xaxis.label.set_color('#DEB64B')
-    subplot.yaxis.label.set_color('#DEB64B')
+    # fig.savefig("graph1.png", dpi='figure')
     
-    print(list(college.index))
+    #Return graph image in route
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/gender_graph.png')
+def gender_graph():
+    
+    #Initialization
+    customer_id=flask_login.current_user.id
+    conn = connect_db()
+    cursor = conn.cursor()
+    
+    #Get user data from database
+    cursor.execute(f"""
+                   
+    SELECT * from `User`
+    WHERE `id`=%s               
+                   
+                   """,(customer_id))
+    
+    college_id=cursor.fetchone()['current_college']
+    
+    #Get race data from college
+    cursor.execute(f"""
+                   
+    SELECT female_ratio
+    FROM `Colleges` 
+    WHERE `id`=%s
+                   
+                   """,(college_id))
+    
+    college=cursor.fetchone()
+    
+    #Rename female ratio
+    college["Female Ratio"]=college.pop("female_ratio")
+    
+    #Find the percentage of male students
+    college["Male Ratio"]=1-college["Female Ratio"]
+    
+    #Creates a dataframe from college race data
+    college=pd.DataFrame.from_dict(college, orient="index")
+    
+    #Sorts data in race dataframe
+    college = college.sort_values(by=0,ascending=False)
+    
+    #Creates figure
+    fig=Figure(figsize=(7,7), facecolor='#202020', edgecolor='#ffffff')
+
+    #Set figure background color
+    fig.set_facecolor('#202020')
+    
+    #Tightens figure
+    fig.set_layout_engine("tight")
+
+    #Creates a subplot over figure
+    subplot=fig.subplots(1)
+
+    #Subplot background color
+    subplot.set_facecolor('#202020')
     
     #Creates a bar graph in the subplot
     pie=subplot.pie(
@@ -882,27 +946,16 @@ def race_graph():
         autopct=('%1.1f%%')
         )
     
-    #circle=Circle(xy=(0.5,0.5), radius=0.3, color="white")
-    
-    #fig.add_artist(circle)
-        
+    #Changes colors of the labels in chart
     pie[1][0].set_color("#DEB64B")
     pie[1][1].set_color("#BF4E30")
-    pie[1][2].set_color("#197BBD")
-    pie[1][3].set_color("#DED9E2")
-    pie[1][4].set_color("#77BFA3")
     
-    fig.savefig("graph1.png", dpi='figure')
-
+    # fig.savefig("graph1.png", dpi='figure')
+    
+    #Return graph image in route
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
-    
     return Response(output.getvalue(), mimetype='image/png')
-
-@app.route('/gender_graph.png')
-def gender_graph():
-
-    return
 
 # Add College from College Page
 @app.route("/college/<college_id>/add", methods=["POST", "GET"])
