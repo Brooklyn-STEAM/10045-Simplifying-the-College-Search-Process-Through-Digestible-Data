@@ -31,6 +31,10 @@
         <div class="text-center mb-4">
             <h1 class="custom-txt fw-bold">{{ college['name'] }}</h1>
             <p class="text-secondary fs-5">{{ college['city'] }}, {{ college['state'] }}</p>
+            {# Display college website ONLY IF available #}
+            {% if college['website'] %}
+            <a class="btn btn-outline-warning px-4 py-2" href="{{ college['website'] }}">Visit Website</a>
+            {% endif %}
         </div>
 
         <!-- Stats cards -->
@@ -86,6 +90,7 @@
             <div class="col-12 col-md-4 mb-4 ms-auto">
                 <div class="card text-white shadow h-100 college-stats">
                     {%if college['population'] %}
+
 
                     {%if student['population_preferences']!=None%}
 
