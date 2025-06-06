@@ -1,5 +1,5 @@
 # All imports
-from flask import Flask, render_template, request, redirect, flash, Response, session
+from flask import Flask, render_template, request, redirect, flash, Response, session, send_file
 import pymysql
 from dynaconf import Dynaconf
 import flask_login
@@ -815,6 +815,13 @@ def college(college_id):
     college_sat = college["average_sat"]
 
     college_population = college["population"]
+    
+    female_ratio=college["female_ratio"]
+    
+    if (college["white_ratio"]==None) and (college["black_ratio"]==None) and (college["hispanic_ratio"]==None) and (college["asian_ratio"]==None):
+        race_demographics=False
+    else:
+        race_demographics=True
 
     if college["tuition"] == None:
         college["tuition"] = "N/A"
@@ -872,6 +879,8 @@ def college(college_id):
         added=added,
         page=page,
         student=student,
+        female_ratio=female_ratio,
+        race_demographics=race_demographics
     )
 
 @app.route('/race_graph.png')
@@ -946,6 +955,10 @@ def race_graph():
         autopct=('%1.1f%%')
         )
     
+    title=subplot.set_title("Pie Chart of Race Demographics")
+    
+    title.set_color("#DEB64B")
+    
     #Changes colors of the wedges in chart
     pie[1][0].set_color("#DEB64B")
     pie[1][1].set_color("#BF4E30")
@@ -989,18 +1002,6 @@ def gender_graph():
     
     college=cursor.fetchone()
     
-    #Rename female ratio
-    college["Female Ratio"]=college.pop("female_ratio")
-    
-    #Find the percentage of male students
-    college["Male Ratio"]=1-college["Female Ratio"]
-    
-    #Creates a dataframe from college race data
-    college=pd.DataFrame.from_dict(college, orient="index")
-    
-    #Sorts data in race dataframe
-    college = college.sort_values(by=0,ascending=False)
-    
     #Creates figure
     fig=Figure(figsize=(7,7), facecolor='#202020', edgecolor='#ffffff')
 
@@ -1016,6 +1017,20 @@ def gender_graph():
     #Subplot background color
     subplot.set_facecolor('#202020')
     
+    #Rename female ratio
+    college["Female Ratio"]=college.pop("female_ratio")
+    
+        
+    #Find the percentage of male students
+    college["Male Ratio"]=1-college["Female Ratio"]
+    
+    #Creates a dataframe from college race data
+    college=pd.DataFrame.from_dict(college, orient="index")
+    
+    #Sorts data in race dataframe
+    college = college.sort_values(by=0,ascending=False)
+    
+    
     #Creates a bar graph in the subplot
     pie=subplot.pie(
         
@@ -1027,13 +1042,15 @@ def gender_graph():
                     'antialiased': True},
         autopct=('%1.1f%%')
         )
-    
+        
     #Changes colors of the labels in chart
     pie[1][0].set_color("#DEB64B")
     pie[1][1].set_color("#BF4E30")
     
-    # fig.savefig("graph1.png", dpi='figure')
+    title=subplot.set_title("Pie Chart of Gender Demographics")
     
+    title.set_color("#DEB64B")
+        
     #Return graph image in route
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
