@@ -615,6 +615,8 @@ def analytics_page():
     WHERE `id` = %s
                    
                    """,(comparing_category,customer_id))
+    
+    d = graph_data(comparing_category=comparing_category)
 
     d=graph_data(comparing_category)
     
